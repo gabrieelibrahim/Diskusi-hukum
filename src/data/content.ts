@@ -1,0 +1,148 @@
+import { Category, Tag, GlossaryTerm, Toolkit, Contributor, Event } from '@/lib/types'
+
+export const categories: Category[] = [
+  { name: 'Hukum Sehari-hari', slug: 'hukum-sehari-hari', description: 'Hal-hal hukum yang sering ditemui dalam kehidupan sehari-hari', count: 3 },
+  { name: 'Pidana', slug: 'pidana', description: 'Hukum pidana dan proses peradilan pidana', count: 0 },
+  { name: 'Perdata dan Kontrak', slug: 'perdata-dan-kontrak', description: 'Hukum perdata, kontrak, dan perjanjian', count: 3 },
+  { name: 'Ketenagakerjaan', slug: 'ketenagakerjaan', description: 'Hukum ketenagakerjaan, kontrak kerja, dan PHK', count: 1 },
+  { name: 'Konsumen dan Bisnis', slug: 'konsumen-dan-bisnis', description: 'Perlindungan konsumen dan hukum bisnis', count: 3 },
+  { name: 'Digital, Teknologi, dan Privasi', slug: 'digital-teknologi-privasi', description: 'Hukum digital, ITE, dan perlindungan data pribadi', count: 2 },
+  { name: 'Keluarga dan Waris', slug: 'keluarga-dan-waris', description: 'Hukum keluarga, pernikahan, perceraian, dan waris', count: 0 },
+  { name: 'Negara, Kebijakan, dan Hak Warga', slug: 'negara-kebijakan-hak-warga', description: 'Tata negara, kebijakan publik, dan hak warga negara', count: 0 },
+  { name: 'Bedah Kasus', slug: 'bedah-kasus', description: 'Analisis dan bedah kasus hukum publik', count: 0 },
+]
+
+export const tags: Tag[] = [
+  { name: 'Perdata', slug: 'perdata', count: 4 },
+  { name: 'Pidana', slug: 'pidana', count: 1 },
+  { name: 'Dasar Hukum', slug: 'dasar-hukum', count: 1 },
+  { name: 'Somasi', slug: 'somasi', count: 1 },
+  { name: 'Gugatan', slug: 'gugatan', count: 1 },
+  { name: 'Konsumen', slug: 'konsumen', count: 3 },
+  { name: 'E-commerce', slug: 'e-commerce', count: 2 },
+  { name: 'Perlindungan Konsumen', slug: 'perlindungan-konsumen', count: 1 },
+  { name: 'Digital', slug: 'digital', count: 2 },
+  { name: 'Bukti', slug: 'bukti', count: 1 },
+  { name: 'ITE', slug: 'ite', count: 2 },
+  { name: 'Kontrak Kerja', slug: 'kontrak-kerja', count: 1 },
+  { name: 'PKWT', slug: 'pkwt', count: 1 },
+  { name: 'PKWTT', slug: 'pkwtt', count: 1 },
+  { name: 'Ketenagakerjaan', slug: 'ketenagakerjaan', count: 1 },
+  { name: 'Kontrak', slug: 'kontrak', count: 2 },
+  { name: 'Utang', slug: 'utang', count: 1 },
+  { name: 'Data Pribadi', slug: 'data-pribadi', count: 1 },
+  { name: 'Privasi', slug: 'privasi', count: 1 },
+  { name: 'Wanprestasi', slug: 'wanprestasi', count: 1 },
+  { name: 'Mediasi', slug: 'mediasi', count: 1 },
+  { name: 'Sengketa', slug: 'sengketa', count: 1 },
+  { name: 'Keamanan', slug: 'keamanan', count: 1 },
+  { name: 'Pengaduan', slug: 'pengaduan', count: 1 },
+]
+
+export const glossaryTerms: GlossaryTerm[] = [
+  { term: 'Gugatan', slug: 'gugatan', definition: 'Tuntutan hak yang diajukan ke pengadilan perdata', category: 'Perdata' },
+  { term: 'JPU', slug: 'jpu', definition: 'Jaksa Penuntut Umum — pihak yang mewakili negara dalam perkara pidana', category: 'Pidana' },
+  { term: 'Wanprestasi', slug: 'wanprestasi', definition: 'Ingkar janji atau tidak memenuhi kewajiban kontrak', category: 'Perdata' },
+  { term: 'Kreditur', slug: 'kreditur', definition: 'Pihak yang berpiutang / berhak menagih', category: 'Perdata' },
+  { term: 'Debitur', slug: 'debitur', definition: 'Pihak yang berutang / berkewajiban memenuhi prestasi', category: 'Perdata' },
+  { term: 'BPKN', slug: 'bpkn', definition: 'Badan Perlindungan Konsumen Nasional', category: 'Konsumen' },
+  { term: 'Retur', slug: 'retur', definition: 'Pengembalian barang karena tidak sesuai atau cacat', category: 'Konsumen' },
+  { term: 'Metadata', slug: 'metadata', definition: 'Data yang memberi informasi tentang data lain — seperti waktu pembuatan, lokasi, perangkat', category: 'Digital' },
+  { term: 'Sertifikasi Elektronik', slug: 'sertifikasi-elektronik', definition: 'Pengesahan dokumen elektronik oleh penyelenggara sertifikasi elektronik', category: 'Digital' },
+  { term: 'PHK', slug: 'phk', definition: 'Pemutusan Hubungan Kerja', category: 'Ketenagakerjaan' },
+  { term: 'Pesangon', slug: 'pesangon', definition: 'Uang kompensasi saat PHK, dihitung dari masa kerja dan upah', category: 'Ketenagakerjaan' },
+  { term: 'Force Majeure', slug: 'force-majeure', definition: 'Keadaan di luar kekuasaan manusia yang membebaskan dari tanggung jawab kontrak', category: 'Perdata' },
+  { term: 'Domisili Hukum', slug: 'domisili-hukum', definition: 'Tempat yang disepakati untuk penyelesaian perkara di pengadilan', category: 'Perdata' },
+  { term: 'Akta Notaris', slug: 'akta-notaris', definition: 'Dokumen resmi yang dibuat di hadapan notaris dengan kekuatan pembuktian sempurna', category: 'Perdata' },
+  { term: 'Pengendali Data', slug: 'pengendali-data', definition: 'Pihak yang menentukan tujuan dan cara pemrosesan data pribadi', category: 'Digital' },
+  { term: 'Biometrik', slug: 'biometrik', definition: 'Data unik fisik seseorang — sidik jari, wajah, iris mata', category: 'Digital' },
+  { term: 'Mediator', slug: 'mediator', definition: 'Pihak netral yang membantu proses mediasi, tidak memutus perkara', category: 'Hukum Sehari-hari' },
+  { term: 'Akta Perdamaian', slug: 'akta-perdamaian', definition: 'Dokumen resmi berisi kesepakatan hasil mediasi yang berkekuatan hukum', category: 'Hukum Sehari-hari' },
+  { term: 'Prestasi', slug: 'prestasi', definition: 'Kewajiban yang harus dipenuhi dalam perjanjian', category: 'Perdata' },
+]
+
+export const toolkits: Toolkit[] = [
+  {
+    id: 'tk-1',
+    title: 'Checklist Aman Bertransaksi Online',
+    slug: 'checklist-aman-transaksi-online',
+    excerpt: 'Daftar periksa sebelum, saat, dan setelah transaksi online.',
+    icon: '🛡️',
+    items: [
+      'Pastikan situs/aplikasi terpercaya',
+      'Cek rating dan ulasan penjual',
+      'Gunakan metode pembayaran aman (rekber, kartu kredit)',
+      'Simpan bukti transfer dan screenshot pesanan',
+      'Periksa barang saat diterima — buka video sebagai bukti',
+      'Jangan transfer ke rekening pribadi jika di marketplace',
+    ],
+    category: 'Konsumen',
+  },
+  {
+    id: 'tk-2',
+    title: 'Hal yang Harus Dicek Sebelum Tanda Tangan Kontrak',
+    slug: 'cek-sebelum-tanda-tangan-kontrak',
+    excerpt: '8 poin penting yang wajib diperiksa dalam kontrak.',
+    icon: '📋',
+    items: [
+      'Identitas para pihak — nama, alamat, status hukum',
+      'Objek perjanjian — deskripsi jelas dan terukur',
+      'Hak dan kewajiban — pastikan seimbang',
+      'Jangka waktu — mulai, berakhir, perpanjangan',
+      'Harga dan cara pembayaran — jumlah, jadwal, denda',
+      'Klausul pelanggaran — konsekuensi dan denda',
+      'Penyelesaian sengketa — mediasi/arbitrase/pengadilan',
+      'Force majeure — bencana, kerusuhan, pandemi',
+    ],
+    category: 'Perdata',
+  },
+  {
+    id: 'tk-3',
+    title: 'Dokumen untuk Pengaduan Konsumen',
+    slug: 'dokumen-pengaduan-konsumen',
+    excerpt: 'Dokumen yang perlu disiapkan saat mengadu ke lembaga konsumen.',
+    icon: '📄',
+    items: [
+      'Bukti pembelian (invoice, kwitansi, bukti transfer)',
+      'Identitas diri (KTP)',
+      'Kronologi kejadian — tanggal dan urutan peristiwa',
+      'Bukti pendukung — foto, video, screenshot chat',
+      'Surat pernyataan konsumen',
+      'Hasil mediasi sebelumnya (jika ada)',
+      'Surat kuasa (jika diwakilkan)',
+    ],
+    category: 'Konsumen',
+  },
+]
+
+export const contributors: Contributor[] = [
+  {
+    name: 'Tim Diskusi Hukum',
+    slug: 'tim-diskusi-hukum',
+    bio: 'Tim editorial komunitas Diskusi Hukum — menulis, mengkurasi, dan memastikan setiap artikel akurat serta bermanfaat.',
+    articleCount: 12,
+    joinedAt: '2026-07-20',
+  },
+]
+
+export const events: Event[] = [
+  {
+    id: 'ev-1',
+    title: 'Diskusi Bulanan: Perlindungan Data Pribadi di Era Digital',
+    slug: 'diskusi-perlindungan-data-digital',
+    date: '2026-08-15',
+    time: '19:00 - 21:00 WIB',
+    description: 'Diskusi santai membahas UU PDP dan implementasinya dalam kehidupan sehari-hari. Terbuka untuk umum.',
+    type: 'diskusi',
+    link: '#',
+  },
+  {
+    id: 'ev-2',
+    title: 'Workshop: Cara Membaca Kontrak Kerja',
+    slug: 'workshop-membaca-kontrak-kerja',
+    date: '2026-08-29',
+    time: '10:00 - 12:00 WIB',
+    description: 'Workshop interaktif membedah klausul-klausul kontrak kerja yang sering menimbulkan masalah.',
+    type: 'workshop',
+  },
+]

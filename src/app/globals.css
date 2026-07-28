@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap');
+
+@layer base {
+  :root {
+    --navy: #1B2A4A;
+    --gold: #C9A84C;
+    --charcoal: #1E1E1E;
+    --slate: #5A6577;
+    --border: #E2E5EC;
+    --bg-alt: #F5F6FA;
+  }
+  body {
+    @apply font-sans text-[#1E1E1E] antialiased;
+    font-feature-settings: 'ss01' on, 'ss02' on, 'cv01' on, 'cv02' on;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading font-semibold tracking-tight;
+  }
+  b, strong { @apply font-semibold; }
+}
+
+@layer utilities {
+  .text-balance { text-wrap: balance; }
+  .text-pretty { text-wrap: pretty; }
+}
+
+/* Reduced motion — respect user preference */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .motion-safe\:animate-in {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* Print styles */
+@media print {
+  header, footer { display: none; }
+  body { color: black; background: white; font-size: 12pt; }
+}
