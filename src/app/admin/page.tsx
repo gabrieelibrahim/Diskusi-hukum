@@ -1,40 +1,31 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { articles } from '../../data/articles'
-import { categories, tags, contributors } from '../../data/content'
-import {
-  IconFileText,
-  IconFolder,
-  IconTags,
-  IconUsers,
-  IconArrowUpRight,
-  IconPlus,
-  IconEye,
-  IconPhoto,
-} from '@tabler/icons-react'
+import { IconFileText, IconFolder, IconTags, IconUsers, IconArrowUpRight, IconPlus, IconEye, IconPhoto } from '@tabler/icons-react'
+import { apiGet } from '@/lib/api'
 
 export default function AdminDashboardPage() {
-  const [articleList] = useState(articles)
+  const [stats, setStats] = useState({ articles: 0, categories: 0, tags: 0, contributors: 0 })
+  const [recentArticles, setRecentArticles] = useState<any[]>([])
 
-  const recentArticles = [...articleList]
-    .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
-    .slice(0, 5)
-
-  const stats = [
-    { label: 'Total Artikel', value: articleList.length, icon: IconFileText, color: '#1B2A4A', bg: 'bg-blue-50' },
-    { label: 'Kategori', value: categories.length, icon: IconFolder, color: '#C9A84C', bg: 'bg-yellow-50' },
-    { label: 'Tag', value: tags.length, icon: IconTags, color: '#5B6B97', bg: 'bg-indigo-50' },
-    { label: 'Kontributor', value: contributors.length, icon: IconUsers, color: '#8490B1', bg: 'bg-gray-50' },
-  ]
-
-  const quickActions = [
-    { label: 'Tulis Artikel', href: '/admin/artikel', icon: IconPlus, desc: 'Buat konten baru' },
-    { label: 'Review', href: '/admin/review', icon: IconEye, desc: 'Artikel menunggu review' },
-    { label: 'Kelola Kategori', href: '/admin/taksonomi', icon: IconFolder, desc: 'Atur taksonomi' },
-    { label: 'Media', href: '/admin/media', icon: IconPhoto, desc: 'Upload media' },
-  ]
+  useEffect(() => {
+    Promise.all([
+      apiGet('/api/articles?status=published'),
+      apiGet('/api/categories'),
+      apiGet('/api/tags'),
+      apiGet('/api/contributors'),
+    ]).then(([articles, categories, tags, contributors]) => {
+      const list = Array.isArray(articles) ? articles : []
+      setStats({
+        articles: list.length,
+        categories: Array.isArray(categories) ? categories.length : 0,
+        tags: Array.isArray(tags) ? tags.length : 0,
+        contributors: Array.isArray(contributors) ? contributors.length : 0,
+      })
+      setRecentArticles(list.slice(0, 5))
+    }).catch(() => {})
+  }, [])
 
   const statusBadge = (status: string) => {
     const map: Record<string, string> = {
@@ -45,11 +36,24 @@ export default function AdminDashboardPage() {
     return map[status] || 'bg-gray-50 text-gray-600 border-gray-200'
   }
 
+  const statCards = [
+    { label: 'Total Artikel', value: stats.articles, icon: IconFileText, color: '#1B2A4A', bg: 'bg-blue-50' },
+    { label: 'Kategori', value: stats.categories, icon: IconFolder, color: '#C9A84C', bg: 'bg-yellow-50' },
+    { label: 'Tag', value: stats.tags, icon: IconTags, color: '#5B6B97', bg: 'bg-indigo-50' },
+    { label: 'Kontributor', value: stats.contributors, icon: IconUsers, color: '#8490B1', bg: 'bg-gray-50' },
+  ]
+
+  const quickActions = [
+    { label: 'Tulis Artikel', href: '/admin/artikel', icon: IconPlus, desc: 'Buat konten baru' },
+    { label: 'Review', href: '/admin/review', icon: IconEye, desc: 'Artikel menunggu review' },
+    { label: 'Kelola Kategori', href: '/admin/taksonomi', icon: IconFolder, desc: 'Atur taksonomi' },
+    { label: 'Media', href: '/admin/media', icon: IconPhoto, desc: 'Upload media' },
+  ]
+
   return (
     <div className="space-y-6">
-      {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {stats.map((s) => {
+        {statCards.map((s) => {
           const Icon = s.icon
           return (
             <div key={s.label} className="bg-white rounded-xl border border-gray-200 p-5">
@@ -67,16 +71,11 @@ export default function AdminDashboardPage() {
         })}
       </div>
 
-      {/* Quick Actions */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {quickActions.map((a) => {
           const Icon = a.icon
           return (
-            <Link
-              key={a.label}
-              href={a.href}
-              className="bg-white rounded-xl border border-gray-200 p-4 hover:border-gray-300 hover:shadow-sm transition-all group"
-            >
+            <Link key={a.label} href={a.href} className="bg-white rounded-xl border border-gray-200 p-4 hover:border-gray-300 hover:shadow-sm transition-all group">
               <div className="w-9 h-9 rounded-lg bg-gray-50 flex items-center justify-center mb-3 group-hover:bg-[#1B2A4A] transition-colors">
                 <Icon size={18} className="text-gray-500 group-hover:text-white" stroke={1.5} />
               </div>
@@ -87,7 +86,6 @@ export default function AdminDashboardPage() {
         })}
       </div>
 
-      {/* Recent Articles */}
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
         <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
           <h2 className="text-sm font-semibold text-gray-800">Artikel Terbaru</h2>
@@ -106,18 +104,19 @@ export default function AdminDashboardPage() {
               </tr>
             </thead>
             <tbody>
-              {recentArticles.map((a) => (
+              {recentArticles.map((a: any) => (
                 <tr key={a.id} className="border-b border-gray-50 last:border-0 hover:bg-gray-50/50">
                   <td className="px-5 py-3.5 font-medium text-gray-800">{a.title}</td>
-                  <td className="px-5 py-3.5 text-gray-500 hidden sm:table-cell">{a.category.name}</td>
+                  <td className="px-5 py-3.5 text-gray-500 hidden sm:table-cell">{a.category}</td>
                   <td className="px-5 py-3.5 hidden md:table-cell">
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${statusBadge(a.status)}`}>
-                      {a.status}
-                    </span>
+                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${statusBadge(a.status)}`}>{a.status}</span>
                   </td>
-                  <td className="px-5 py-3.5 text-gray-500 hidden lg:table-cell">{a.publishedAt}</td>
+                  <td className="px-5 py-3.5 text-gray-500 hidden lg:table-cell">{a.publishedAt || a.published_at}</td>
                 </tr>
               ))}
+              {recentArticles.length === 0 && (
+                <tr><td colSpan={4} className="px-5 py-8 text-center text-gray-400">Belum ada artikel.</td></tr>
+              )}
             </tbody>
           </table>
         </div>

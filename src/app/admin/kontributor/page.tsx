@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { contributors as initialContributors } from '../../../data/content'
+import { apiGet, apiPatch } from '@/lib/api'
 import { IconUsers, IconUserCheck, IconUserX, IconCalendar, IconFileText } from '@tabler/icons-react'
 
 interface ContributorWithApproval {
@@ -15,27 +15,27 @@ interface ContributorWithApproval {
 
 export default function AdminKontributorPage() {
   const [list, setList] = useState<ContributorWithApproval[]>([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const stored = localStorage.getItem('admin_contributors')
-    if (stored) {
-      setList(JSON.parse(stored))
-    } else {
-      const initial = initialContributors.map((c) => ({
-        ...c,
-        approved: true,
-      }))
-      setList(initial)
-      localStorage.setItem('admin_contributors', JSON.stringify(initial))
-    }
+    setLoading(true)
+    apiGet('/api/contributors?all=true')
+      .then((data) => setList(Array.isArray(data) ? data : []))
+      .catch(() => {})
+      .finally(() => setLoading(false))
   }, [])
 
-  useEffect(() => {
-    localStorage.setItem('admin_contributors', JSON.stringify(list))
-  }, [list])
-
-  const toggleApproval = (slug: string) => {
-    setList(list.map((c) => (c.slug === slug ? { ...c, approved: !c.approved } : c)))
+  const toggleApproval = async (slug: string, currentApproved: boolean) => {
+    try {
+      await apiPatch('/api/contributors', { slug, approved: !currentApproved })
+      setList(
+        list.map((c) =>
+          c.slug === slug ? { ...c, approved: !currentApproved } : c
+        )
+      )
+    } catch (err: any) {
+      alert(err.message)
+    }
   }
 
   return (
@@ -46,6 +46,8 @@ export default function AdminKontributorPage() {
           Kelola Kontributor
         </h1>
       </div>
+
+      {loading && <div className="text-center py-8 text-gray-400">Memuat data...</div>}
 
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
         <table className="w-full text-sm">
@@ -97,7 +99,7 @@ export default function AdminKontributorPage() {
                 </td>
                 <td className="px-4 py-3">
                   <button
-                    onClick={() => toggleApproval(c.slug)}
+                    onClick={() => toggleApproval(c.slug, c.approved)}
                     className={`inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg border font-medium transition-colors ${
                       c.approved
                         ? 'border-red-200 text-red-600 hover:bg-red-50'
@@ -110,7 +112,7 @@ export default function AdminKontributorPage() {
                 </td>
               </tr>
             ))}
-            {list.length === 0 && (
+            {list.length === 0 && !loading && (
               <tr>
                 <td colSpan={6} className="px-4 py-8 text-center text-gray-400">
                   Belum ada kontributor.

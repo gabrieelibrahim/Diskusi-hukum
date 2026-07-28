@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { apiGet, apiPut } from '@/lib/api'
 import { IconSettings, IconDeviceFloppy, IconCheck } from '@tabler/icons-react'
 
 interface Settings {
@@ -25,24 +26,32 @@ const defaultSettings: Settings = {
 
 export default function AdminPengaturanPage() {
   const [settings, setSettings] = useState<Settings>(defaultSettings)
+  const [loading, setLoading] = useState(true)
   const [saved, setSaved] = useState(false)
 
   useEffect(() => {
-    const stored = localStorage.getItem('admin_settings')
-    if (stored) {
-      setSettings({ ...defaultSettings, ...JSON.parse(stored) })
-    }
+    setLoading(true)
+    apiGet('/api/settings')
+      .then((data) => {
+        if (data) setSettings({ ...defaultSettings, ...data })
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false))
   }, [])
 
   const handleChange = (key: keyof Settings, value: string) => {
     setSettings({ ...settings, [key]: value })
   }
 
-  const handleSave = (e: React.FormEvent) => {
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault()
-    localStorage.setItem('admin_settings', JSON.stringify(settings))
-    setSaved(true)
-    setTimeout(() => setSaved(false), 2000)
+    try {
+      await apiPut('/api/settings', settings)
+      setSaved(true)
+      setTimeout(() => setSaved(false), 2000)
+    } catch (err: any) {
+      alert(err.message)
+    }
   }
 
   const fields: { key: keyof Settings; label: string; type?: string; placeholder?: string }[] = [
@@ -67,67 +76,71 @@ export default function AdminPengaturanPage() {
         </h1>
       </div>
 
-      <form onSubmit={handleSave} className="space-y-8">
-        {/* Site info */}
-        <section className="bg-white rounded-xl border border-gray-200 p-5 space-y-4">
-          <h2 className="font-semibold text-gray-800">Informasi Situs</h2>
+      {loading && <div className="text-center py-8 text-gray-400">Memuat data...</div>}
 
-          {fields.map((f) => (
-            <div key={f.key}>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{f.label}</label>
-              {f.key === 'description' ? (
-                <textarea
-                  value={settings[f.key]}
-                  onChange={(e) => handleChange(f.key, e.target.value)}
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/20 focus:border-[#C9A84C] resize-none"
-                  rows={3}
-                />
-              ) : (
+      {!loading && (
+        <form onSubmit={handleSave} className="space-y-8">
+          {/* Site info */}
+          <section className="bg-white rounded-xl border border-gray-200 p-5 space-y-4">
+            <h2 className="font-semibold text-gray-800">Informasi Situs</h2>
+
+            {fields.map((f) => (
+              <div key={f.key}>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{f.label}</label>
+                {f.key === 'description' ? (
+                  <textarea
+                    value={settings[f.key]}
+                    onChange={(e) => handleChange(f.key, e.target.value)}
+                    className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/20 focus:border-[#C9A84C] resize-none"
+                    rows={3}
+                  />
+                ) : (
+                  <input
+                    value={settings[f.key]}
+                    onChange={(e) => handleChange(f.key, e.target.value)}
+                    placeholder={f.placeholder}
+                    className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/20 focus:border-[#C9A84C]"
+                  />
+                )}
+              </div>
+            ))}
+          </section>
+
+          {/* Social media */}
+          <section className="bg-white rounded-xl border border-gray-200 p-5 space-y-4">
+            <h2 className="font-semibold text-gray-800">Media Sosial</h2>
+
+            {socialFields.map((f) => (
+              <div key={f.key}>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{f.label}</label>
                 <input
                   value={settings[f.key]}
                   onChange={(e) => handleChange(f.key, e.target.value)}
                   placeholder={f.placeholder}
                   className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/20 focus:border-[#C9A84C]"
                 />
-              )}
-            </div>
-          ))}
-        </section>
+              </div>
+            ))}
+          </section>
 
-        {/* Social media */}
-        <section className="bg-white rounded-xl border border-gray-200 p-5 space-y-4">
-          <h2 className="font-semibold text-gray-800">Media Sosial</h2>
-
-          {socialFields.map((f) => (
-            <div key={f.key}>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{f.label}</label>
-              <input
-                value={settings[f.key]}
-                onChange={(e) => handleChange(f.key, e.target.value)}
-                placeholder={f.placeholder}
-                className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/20 focus:border-[#C9A84C]"
-              />
-            </div>
-          ))}
-        </section>
-
-        {/* Save */}
-        <div className="flex items-center gap-4">
-          <button
-            type="submit"
-            className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#C9A84C] text-white text-sm font-medium rounded-lg hover:bg-[#B8963C] transition-colors"
-          >
-            <IconDeviceFloppy size={18} />
-            Simpan Pengaturan
-          </button>
-          {saved && (
-            <span className="inline-flex items-center gap-1 text-sm text-green-600 font-medium">
-              <IconCheck size={16} />
-              Tersimpan!
-            </span>
-          )}
-        </div>
-      </form>
+          {/* Save */}
+          <div className="flex items-center gap-4">
+            <button
+              type="submit"
+              className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#C9A84C] text-white text-sm font-medium rounded-lg hover:bg-[#B8963C] transition-colors"
+            >
+              <IconDeviceFloppy size={18} />
+              Simpan Pengaturan
+            </button>
+            {saved && (
+              <span className="inline-flex items-center gap-1 text-sm text-green-600 font-medium">
+                <IconCheck size={16} />
+                Tersimpan!
+              </span>
+            )}
+          </div>
+        </form>
+      )}
     </div>
   )
 }

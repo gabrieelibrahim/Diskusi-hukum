@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { apiGet, apiDelete } from '@/lib/api'
 import { IconPhoto, IconUpload, IconTrash, IconFile, IconFileTypePdf, IconMovie, IconMusic } from '@tabler/icons-react'
 
 interface MediaItem {
@@ -13,30 +14,47 @@ interface MediaItem {
 
 export default function AdminMediaPage() {
   const [mediaList, setMediaList] = useState<MediaItem[]>([])
+  const [loading, setLoading] = useState(true)
+  const [uploading, setUploading] = useState(false)
   const [dragOver, setDragOver] = useState(false)
 
-  useEffect(() => {
-    const stored = localStorage.getItem('admin_media')
-    if (stored) {
-      setMediaList(JSON.parse(stored))
-    }
-  }, [])
+  const loadMedia = () => {
+    setLoading(true)
+    apiGet('/api/media')
+      .then((data) => setMediaList(Array.isArray(data) ? data : []))
+      .catch(() => {})
+      .finally(() => setLoading(false))
+  }
 
   useEffect(() => {
-    localStorage.setItem('admin_media', JSON.stringify(mediaList))
-  }, [mediaList])
+    loadMedia()
+  }, [])
+
+  const uploadFiles = async (files: FileList) => {
+    setUploading(true)
+    const formData = new FormData()
+    Array.from(files).forEach((f) => formData.append('files', f))
+
+    try {
+      const token = localStorage.getItem('admin_token')
+      const res = await fetch('/api/media', {
+        method: 'POST',
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+        body: formData,
+      })
+      if (!res.ok) throw new Error(await res.text())
+      loadMedia()
+    } catch (err: any) {
+      alert(err.message)
+    } finally {
+      setUploading(false)
+    }
+  }
 
   const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
     if (!files) return
-    const newItems: MediaItem[] = Array.from(files).map((f) => ({
-      id: `media-${Date.now()}-${f.name}`,
-      name: f.name,
-      type: f.type || 'unknown',
-      size: formatSize(f.size),
-      date: new Date().toISOString().split('T')[0],
-    }))
-    setMediaList([...newItems, ...mediaList])
+    uploadFiles(files)
     e.target.value = ''
   }
 
@@ -45,19 +63,17 @@ export default function AdminMediaPage() {
     setDragOver(false)
     const files = e.dataTransfer.files
     if (!files.length) return
-    const newItems: MediaItem[] = Array.from(files).map((f) => ({
-      id: `media-${Date.now()}-${f.name}`,
-      name: f.name,
-      type: f.type || 'unknown',
-      size: formatSize(f.size),
-      date: new Date().toISOString().split('T')[0],
-    }))
-    setMediaList([...newItems, ...mediaList])
+    uploadFiles(files)
   }
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (!confirm('Hapus media ini?')) return
-    setMediaList(mediaList.filter((m) => m.id !== id))
+    try {
+      await apiDelete(`/api/media?id=${id}`)
+      loadMedia()
+    } catch (err: any) {
+      alert(err.message)
+    }
   }
 
   const formatSize = (bytes: number) => {
@@ -98,22 +114,26 @@ export default function AdminMediaPage() {
           </div>
         </div>
         <p className="text-sm text-gray-500 mb-4">
-          Seret file ke sini atau klik untuk upload
+          {uploading ? 'Mengupload...' : 'Seret file ke sini atau klik untuk upload'}
         </p>
         <label className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#C9A84C] text-white text-sm font-medium rounded-lg cursor-pointer hover:bg-[#B8963C] transition-colors">
           <IconUpload size={16} />
-          Pilih File
+          {uploading ? 'Mengupload...' : 'Pilih File'}
           <input
             type="file"
             multiple
             onChange={handleFileInput}
             className="hidden"
+            disabled={uploading}
           />
         </label>
       </div>
 
+      {/* Loading */}
+      {loading && <div className="text-center py-8 text-gray-400">Memuat data...</div>}
+
       {/* Media items */}
-      {mediaList.length > 0 && (
+      {!loading && mediaList.length > 0 && (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
           {mediaList.map((m) => (
             <div
@@ -137,7 +157,7 @@ export default function AdminMediaPage() {
         </div>
       )}
 
-      {mediaList.length === 0 && (
+      {!loading && mediaList.length === 0 && (
         <div className="text-center text-gray-400 py-12 text-sm">
           <IconPhoto size={40} className="mx-auto mb-3 opacity-30" />
           Belum ada file media.

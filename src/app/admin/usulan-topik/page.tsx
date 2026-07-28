@@ -1,25 +1,31 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import type { TopicSuggestion } from '../../../lib/types'
+import { apiGet, apiPatch } from '@/lib/api'
+import type { TopicSuggestion } from '@/lib/types'
 import { IconBulb, IconCheck, IconX, IconUser, IconMail, IconCalendar } from '@tabler/icons-react'
 
 export default function AdminUsulanTopikPage() {
   const [topics, setTopics] = useState<TopicSuggestion[]>([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const stored = localStorage.getItem('admin_topic_suggestions')
-    if (stored) {
-      setTopics(JSON.parse(stored))
-    }
+    setLoading(true)
+    apiGet('/api/suggestions')
+      .then((data) => setTopics(Array.isArray(data) ? data : []))
+      .catch(() => {})
+      .finally(() => setLoading(false))
   }, [])
 
-  useEffect(() => {
-    localStorage.setItem('admin_topic_suggestions', JSON.stringify(topics))
-  }, [topics])
-
-  const updateStatus = (id: string, status: 'approved' | 'rejected') => {
-    setTopics(topics.map((t) => (t.id === id ? { ...t, status } : t)))
+  const updateStatus = async (id: string, status: 'approved' | 'rejected') => {
+    try {
+      await apiPatch('/api/suggestions', { id, status })
+      setTopics(
+        topics.map((t) => (t.id === id ? { ...t, status } : t))
+      )
+    } catch (err: any) {
+      alert(err.message)
+    }
   }
 
   const statusBadge = (status: string) => {
@@ -49,7 +55,9 @@ export default function AdminUsulanTopikPage() {
         </h1>
       </div>
 
-      {topics.length === 0 && (
+      {loading && <div className="text-center py-8 text-gray-400">Memuat data...</div>}
+
+      {!loading && topics.length === 0 && (
         <div className="bg-white rounded-xl border border-gray-200 p-8 text-center text-gray-400">
           <IconBulb size={40} className="mx-auto mb-3 opacity-40" />
           <p>Belum ada usulan topik.</p>

@@ -1,13 +1,14 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { categories as initialCategories, tags as initialTags } from '../../../data/content'
-import type { Category, Tag } from '../../../lib/types'
+import { apiGet, apiPost, apiDelete } from '@/lib/api'
+import type { Category, Tag } from '@/lib/types'
 import { IconFolder, IconTags, IconPlus, IconTrash, IconHash } from '@tabler/icons-react'
 
 export default function AdminTaksonomiPage() {
-  const [cats, setCats] = useState<Category[]>(initialCategories)
-  const [tagList, setTagList] = useState<Tag[]>(initialTags)
+  const [cats, setCats] = useState<Category[]>([])
+  const [tagList, setTagList] = useState<Tag[]>([])
+  const [loading, setLoading] = useState(true)
 
   // Category form
   const [catName, setCatName] = useState('')
@@ -17,61 +18,78 @@ export default function AdminTaksonomiPage() {
   const [tagName, setTagName] = useState('')
 
   useEffect(() => {
-    const storedCats = localStorage.getItem('admin_categories')
-    if (storedCats) setCats(JSON.parse(storedCats))
-    const storedTags = localStorage.getItem('admin_tags')
-    if (storedTags) setTagList(JSON.parse(storedTags))
+    setLoading(true)
+    Promise.all([
+      apiGet('/api/categories').then((data) => setCats(Array.isArray(data) ? data : [])),
+      apiGet('/api/tags').then((data) => setTagList(Array.isArray(data) ? data : [])),
+    ])
+      .catch(() => {})
+      .finally(() => setLoading(false))
   }, [])
-
-  useEffect(() => {
-    localStorage.setItem('admin_categories', JSON.stringify(cats))
-  }, [cats])
-
-  useEffect(() => {
-    localStorage.setItem('admin_tags', JSON.stringify(tagList))
-  }, [tagList])
 
   const slugify = (s: string) =>
     s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
 
-  const addCategory = (e: React.FormEvent) => {
+  const addCategory = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!catName.trim()) return
-    const newCat: Category = {
-      name: catName.trim(),
-      slug: slugify(catName),
-      description: catDesc.trim(),
-      count: 0,
+    try {
+      await apiPost('/api/categories', {
+        name: catName.trim(),
+        slug: slugify(catName),
+        description: catDesc.trim(),
+      })
+      setCatName('')
+      setCatDesc('')
+      const data = await apiGet('/api/categories')
+      setCats(Array.isArray(data) ? data : [])
+    } catch (err: any) {
+      alert(err.message)
     }
-    setCats([...cats, newCat])
-    setCatName('')
-    setCatDesc('')
   }
 
-  const deleteCategory = (slug: string) => {
+  const deleteCategory = async (slug: string) => {
     if (!confirm(`Hapus kategori "${slug}"?`)) return
-    setCats(cats.filter((c) => c.slug !== slug))
+    try {
+      await apiDelete(`/api/categories/${slug}`)
+      const data = await apiGet('/api/categories')
+      setCats(Array.isArray(data) ? data : [])
+    } catch (err: any) {
+      alert(err.message)
+    }
   }
 
-  const addTag = (e: React.FormEvent) => {
+  const addTag = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!tagName.trim()) return
-    const newTag: Tag = {
-      name: tagName.trim(),
-      slug: slugify(tagName),
-      count: 0,
+    try {
+      await apiPost('/api/tags', {
+        name: tagName.trim(),
+        slug: slugify(tagName),
+      })
+      setTagName('')
+      const data = await apiGet('/api/tags')
+      setTagList(Array.isArray(data) ? data : [])
+    } catch (err: any) {
+      alert(err.message)
     }
-    setTagList([...tagList, newTag])
-    setTagName('')
   }
 
-  const deleteTag = (slug: string) => {
+  const deleteTag = async (slug: string) => {
     if (!confirm(`Hapus tag "${slug}"?`)) return
-    setTagList(tagList.filter((t) => t.slug !== slug))
+    try {
+      await apiDelete(`/api/tags/${slug}`)
+      const data = await apiGet('/api/tags')
+      setTagList(Array.isArray(data) ? data : [])
+    } catch (err: any) {
+      alert(err.message)
+    }
   }
 
   return (
     <div className="space-y-10">
+      {loading && <div className="text-center py-8 text-gray-400">Memuat data...</div>}
+
       {/* Categories */}
       <section>
         <div className="flex items-center gap-2 mb-4">

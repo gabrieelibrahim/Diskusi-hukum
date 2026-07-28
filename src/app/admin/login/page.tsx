@@ -9,15 +9,27 @@ export default function AdminLoginPage() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
-    if (username === 'admin' && password === 'admin123') {
+    setLoading(true)
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.message || 'Login gagal')
+      localStorage.setItem('admin_token', data.token)
       localStorage.setItem('admin_logged_in', 'true')
       router.push('/admin')
-    } else {
-      setError('Username atau password salah.')
+    } catch (err: any) {
+      setError(err.message || 'Username atau password salah.')
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -75,7 +87,8 @@ export default function AdminLoginPage() {
 
             <button
               type="submit"
-              className="w-full bg-[#C9A84C] text-white text-sm font-medium py-2.5 rounded-lg hover:bg-[#B8973A] transition-colors flex items-center justify-center gap-2"
+              disabled={loading}
+              className="w-full bg-[#C9A84C] text-white text-sm font-medium py-2.5 rounded-lg hover:bg-[#B8973A] transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
             >
               <IconLogin size={16} />
               Masuk

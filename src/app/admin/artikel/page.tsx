@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { articles } from '../../../data/articles'
-import type { Article } from '../../../lib/types'
+import { apiGet, apiPost, apiDelete } from '@/lib/api'
+import type { Article } from '@/lib/types'
 import {
   IconFileText,
   IconEdit,
@@ -17,7 +17,9 @@ import {
 type ArticleStatus = 'all' | 'draft' | 'review' | 'published'
 
 export default function AdminArtikelPage() {
-  const [list, setList] = useState(articles)
+  const [list, setList] = useState<Article[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
   const [filter, setFilter] = useState<ArticleStatus>('all')
   const [showForm, setShowForm] = useState(false)
   const [search, setSearch] = useState('')
@@ -27,11 +29,17 @@ export default function AdminArtikelPage() {
   const [category, setCategory] = useState('')
   const [author, setAuthor] = useState('')
 
+  const loadArticles = () => {
+    setLoading(true)
+    setError('')
+    apiGet('/api/articles')
+      .then((data) => setList(Array.isArray(data) ? data : []))
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false))
+  }
+
   useEffect(() => {
-    const stored = localStorage.getItem('admin_articles')
-    if (stored) {
-      setList(JSON.parse(stored))
-    }
+    loadArticles()
   }, [])
 
   const filtered = list
@@ -60,41 +68,33 @@ export default function AdminArtikelPage() {
     return map[status] || status
   }
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (slug: string) => {
     if (!confirm('Hapus artikel ini?')) return
-    const updated = list.filter((a) => a.id !== id)
-    setList(updated)
-    localStorage.setItem('admin_articles', JSON.stringify(updated))
+    try {
+      await apiDelete(`/api/articles/${slug}`)
+      loadArticles()
+    } catch (err: any) {
+      alert(err.message)
+    }
   }
 
-  const handleAdd = (e: React.FormEvent) => {
+  const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!title.trim() || !category.trim() || !author.trim()) return
-    const newArticle: Article = {
-      id: `art-${Date.now()}`,
-      title: title.trim(),
-      slug: title.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-      excerpt: '',
-      cover: '',
-      author: { name: author.trim(), slug: author.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-') },
-      category: { name: category.trim(), slug: category.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-') },
-      tags: [],
-      publishedAt: new Date().toISOString().split('T')[0],
-      updatedAt: new Date().toISOString().split('T')[0],
-      status: 'draft',
-      content: '',
-      readingTime: 0,
-      sources: [],
-      glossary: [],
-      keyPoints: [],
+    try {
+      await apiPost('/api/articles', {
+        title: title.trim(),
+        category: category.trim(),
+        author: author.trim(),
+      })
+      setTitle('')
+      setCategory('')
+      setAuthor('')
+      setShowForm(false)
+      loadArticles()
+    } catch (err: any) {
+      alert(err.message)
     }
-    const updated = [newArticle, ...list]
-    setList(updated)
-    localStorage.setItem('admin_articles', JSON.stringify(updated))
-    setTitle('')
-    setCategory('')
-    setAuthor('')
-    setShowForm(false)
   }
 
   const tabs: { key: ArticleStatus; label: string }[] = [
@@ -191,6 +191,10 @@ export default function AdminArtikelPage() {
         </form>
       )}
 
+      {/* Loading & Error */}
+      {loading && <div className="text-center py-8 text-gray-400">Memuat data...</div>}
+      {error && <div className="text-center py-4 text-red-500 text-sm">{error}</div>}
+
       {/* Filter & Search */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex gap-1 bg-white rounded-lg border border-gray-200 p-1 w-fit">
@@ -259,7 +263,7 @@ export default function AdminArtikelPage() {
                         Edit
                       </button>
                       <button
-                        onClick={() => handleDelete(a.id)}
+                        onClick={() => handleDelete(a.slug)}
                         className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg border border-red-200 text-red-600 hover:bg-red-50 transition-colors"
                       >
                         <IconTrash size={14} />
@@ -269,7 +273,7 @@ export default function AdminArtikelPage() {
                   </td>
                 </tr>
               ))}
-              {filtered.length === 0 && (
+              {filtered.length === 0 && !loading && (
                 <tr>
                   <td colSpan={6} className="px-4 py-8 text-center text-gray-400">
                     Tidak ada artikel.

@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { events as initialEvents } from '../../../data/content'
-import type { Event } from '../../../lib/types'
+import { apiGet, apiPost, apiDelete } from '@/lib/api'
+import type { Event } from '@/lib/types'
 import {
   IconCalendarEvent,
   IconEdit,
@@ -15,6 +15,7 @@ import {
 
 export default function AdminAgendaPage() {
   const [events, setEvents] = useState<Event[]>([])
+  const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
 
@@ -29,19 +30,17 @@ export default function AdminAgendaPage() {
 
   const [form, setForm] = useState(emptyForm)
 
-  useEffect(() => {
-    const stored = localStorage.getItem('admin_events')
-    if (stored) {
-      setEvents(JSON.parse(stored))
-    } else {
-      setEvents(initialEvents)
-      localStorage.setItem('admin_events', JSON.stringify(initialEvents))
-    }
-  }, [])
+  const loadEvents = () => {
+    setLoading(true)
+    apiGet('/api/events')
+      .then((data) => setEvents(Array.isArray(data) ? data : []))
+      .catch(() => {})
+      .finally(() => setLoading(false))
+  }
 
   useEffect(() => {
-    localStorage.setItem('admin_events', JSON.stringify(events))
-  }, [events])
+    loadEvents()
+  }, [])
 
   const slugify = (s: string) =>
     s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
@@ -65,39 +64,36 @@ export default function AdminAgendaPage() {
     setShowForm(true)
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!form.title.trim() || !form.date) return
 
-    if (editingId) {
-      setEvents(
-        events.map((ev) =>
-          ev.id === editingId
-            ? { ...ev, ...form, slug: slugify(form.title), link: form.link || undefined }
-            : ev
-        )
-      )
-    } else {
-      const newEvent: Event = {
-        id: `ev-${Date.now()}`,
+    try {
+      await apiPost('/api/events', {
         title: form.title.trim(),
-        slug: slugify(form.title),
         date: form.date,
         time: form.time,
         description: form.description.trim(),
         type: form.type,
         link: form.link.trim() || undefined,
-      }
-      setEvents([...events, newEvent])
+      })
+      setShowForm(false)
+      setForm(emptyForm)
+      setEditingId(null)
+      loadEvents()
+    } catch (err: any) {
+      alert(err.message)
     }
-    setShowForm(false)
-    setForm(emptyForm)
-    setEditingId(null)
   }
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (!confirm('Hapus agenda ini?')) return
-    setEvents(events.filter((ev) => ev.id !== id))
+    try {
+      await apiDelete(`/api/events?id=${id}`)
+      loadEvents()
+    } catch (err: any) {
+      alert(err.message)
+    }
   }
 
   const typeLabel: Record<string, string> = {
@@ -129,6 +125,8 @@ export default function AdminAgendaPage() {
           Tambah Agenda
         </button>
       </div>
+
+      {loading && <div className="text-center py-8 text-gray-400">Memuat data...</div>}
 
       {/* Form */}
       {showForm && (
@@ -283,7 +281,7 @@ export default function AdminAgendaPage() {
                 </td>
               </tr>
             ))}
-            {events.length === 0 && (
+            {events.length === 0 && !loading && (
               <tr>
                 <td colSpan={5} className="px-4 py-8 text-center text-gray-400">
                   Belum ada agenda.

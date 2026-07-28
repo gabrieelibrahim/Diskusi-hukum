@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { articles } from '../../../data/articles'
-import type { Article } from '../../../lib/types'
+import { apiGet, apiPut } from '@/lib/api'
+import type { Article } from '@/lib/types'
 import {
   IconClipboardCheck,
   IconX,
@@ -16,40 +16,43 @@ import {
 export default function AdminReviewPage() {
   const [queue, setQueue] = useState<Article[]>([])
   const [notes, setNotes] = useState<Record<string, string>>({})
+  const [loading, setLoading] = useState(true)
+
+  const loadQueue = () => {
+    setLoading(true)
+    apiGet('/api/articles?status=review')
+      .then((data) => setQueue(Array.isArray(data) ? data : []))
+      .catch(() => {})
+      .finally(() => setLoading(false))
+  }
 
   useEffect(() => {
-    const stored = localStorage.getItem('admin_articles')
-    if (stored) {
-      const all: Article[] = JSON.parse(stored)
-      setQueue(all.filter((a) => a.status === 'review'))
-    } else {
-      setQueue(articles.filter((a) => a.status === 'review'))
-    }
+    loadQueue()
   }, [])
 
-  const updateArticle = (id: string, newStatus: 'published' | 'draft') => {
-    const stored = localStorage.getItem('admin_articles')
-    const all: Article[] = stored ? JSON.parse(stored) : [...articles]
-    const updated = all.map((a) =>
-      a.id === id ? { ...a, status: newStatus } : a
-    )
-    localStorage.setItem('admin_articles', JSON.stringify(updated))
-    setQueue(updated.filter((a) => a.status === 'review'))
-  }
-
-  const handleAccept = (id: string) => {
-    const note = notes[id]
+  const handleAccept = async (article: Article) => {
+    const note = notes[article.id]
     if (note && !confirm(`Artikel akan diterbitkan. Catatan: "${note}"`)) return
-    updateArticle(id, 'published')
+    try {
+      await apiPut(`/api/articles/${article.slug}`, { status: 'published' })
+      loadQueue()
+    } catch (err: any) {
+      alert(err.message)
+    }
   }
 
-  const handleReject = (id: string) => {
-    const note = notes[id]
+  const handleReject = async (article: Article) => {
+    const note = notes[article.id]
     if (!note) {
       alert('Silakan isi catatan review sebelum menolak.')
       return
     }
-    updateArticle(id, 'draft')
+    try {
+      await apiPut(`/api/articles/${article.slug}`, { status: 'draft' })
+      loadQueue()
+    } catch (err: any) {
+      alert(err.message)
+    }
   }
 
   return (
@@ -61,7 +64,9 @@ export default function AdminReviewPage() {
         </h1>
       </div>
 
-      {queue.length === 0 && (
+      {loading && <div className="text-center py-8 text-gray-400">Memuat data...</div>}
+
+      {!loading && queue.length === 0 && (
         <div className="bg-white rounded-xl border border-gray-200 p-8 text-center text-gray-400">
           <IconClipboardCheck size={40} className="mx-auto mb-3 opacity-40" />
           <p>Tidak ada artikel yang perlu direview.</p>
@@ -114,14 +119,14 @@ export default function AdminReviewPage() {
 
             <div className="flex items-center gap-3 mt-4">
               <button
-                onClick={() => handleAccept(article.id)}
+                onClick={() => handleAccept(article)}
                 className="inline-flex items-center gap-2 px-5 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 transition-colors"
               >
                 <IconClipboardCheck size={16} />
                 Terima & Terbitkan
               </button>
               <button
-                onClick={() => handleReject(article.id)}
+                onClick={() => handleReject(article)}
                 className="inline-flex items-center gap-2 px-5 py-2 text-sm font-medium text-white bg-red-500 rounded-lg hover:bg-red-600 transition-colors"
               >
                 <IconX size={16} />
