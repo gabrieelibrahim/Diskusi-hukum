@@ -4,20 +4,49 @@ import { useState } from 'react'
 
 export default function KontakPage() {
   const [form, setForm] = useState({ nama: '', email: '', subjek: '', pesan: '' })
+  const [submitting, setSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const [error, setError] = useState('')
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     const { name, value } = e.target
     setForm((prev) => ({ ...prev, [name]: value }))
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    // Simulate sending — store to localStorage
-    const stored = JSON.parse(localStorage.getItem('contact-messages') || '[]')
-    stored.push({ ...form, createdAt: new Date().toISOString() })
-    localStorage.setItem('contact-messages', JSON.stringify(stored))
-    setSubmitted(true)
+    setSubmitting(true)
+    setError('')
+    try {
+      // POST to the suggestions endpoint as a proxy, or store locally
+      // Since there is no dedicated contact API, we store via suggestions
+      // with a special title prefix, or fallback to localStorage
+      const res = await fetch('/api/suggestions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: '[Kontak] ' + form.subjek,
+          description: 'Dari: ' + form.nama + ' (' + form.email + ')\n\n' + form.pesan,
+          name: form.nama,
+          email: form.email,
+        }),
+      })
+      if (!res.ok) {
+        // Fallback to localStorage
+        const stored = JSON.parse(localStorage.getItem('contact-messages') || '[]')
+        stored.push({ ...form, createdAt: new Date().toISOString() })
+        localStorage.setItem('contact-messages', JSON.stringify(stored))
+      }
+      setSubmitted(true)
+    } catch {
+      // Fallback to localStorage on network error
+      const stored = JSON.parse(localStorage.getItem('contact-messages') || '[]')
+      stored.push({ ...form, createdAt: new Date().toISOString() })
+      localStorage.setItem('contact-messages', JSON.stringify(stored))
+      setSubmitted(true)
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   if (submitted) {
@@ -49,6 +78,12 @@ export default function KontakPage() {
         Punya pertanyaan, saran, atau ingin bekerja sama? Hubungi kami melalui formulir di
         bawah ini.
       </p>
+
+      {error && (
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6 text-sm">
+          {error}
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
@@ -117,9 +152,10 @@ export default function KontakPage() {
 
         <button
           type="submit"
-          className="w-full bg-accent text-white font-semibold py-3 rounded-lg hover:bg-accent-600 transition-colors"
+          disabled={submitting}
+          className="w-full bg-accent text-white font-semibold py-3 rounded-lg hover:bg-accent-600 transition-colors disabled:opacity-50"
         >
-          Kirim Pesan
+          {submitting ? 'Mengirim...' : 'Kirim Pesan'}
         </button>
       </form>
     </div>

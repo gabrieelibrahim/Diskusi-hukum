@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
-import { getArticleBySlug, getArticlesByTag } from '@/data/articles'
+import { fetchArticleBySlug, fetchPublishedArticles } from '@/lib/server-api'
+import { mapArticle } from '@/lib/api'
 import ArticleContent from './ArticleContent'
 import ShareButtons from '@/components/ShareButtons'
 
@@ -9,59 +10,64 @@ interface Props {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const article = getArticleBySlug(params.slug)
+  const article = await fetchArticleBySlug(params.slug)
   if (!article) return { title: 'Artikel Tidak Ditemukan' }
+  const mapped = mapArticle(article)
   return {
-    title: `${article.title} — Diskusi Hukum`,
-    description: article.excerpt,
+    title: `${mapped.title} — Diskusi Hukum`,
+    description: mapped.excerpt,
     openGraph: {
-      title: article.title,
-      description: article.excerpt,
+      title: mapped.title,
+      description: mapped.excerpt,
       type: 'article',
-      publishedTime: article.publishedAt,
-      authors: [article.author.name],
+      publishedTime: mapped.publishedAt,
+      authors: [mapped.author.name],
     },
   }
 }
 
-export default function ArticleDetailPage({ params }: Props) {
-  const article = getArticleBySlug(params.slug)
-  if (!article) notFound()
+export default async function ArticleDetailPage({ params }: Props) {
+  const articleData = await fetchArticleBySlug(params.slug)
+  if (!articleData) notFound()
 
-  const relatedArticles = article.tags.length > 0
-    ? getArticlesByTag(article.tags[0].slug).filter((a) => a.slug !== article.slug).slice(0, 3)
-    : []
+  const article = mapArticle(articleData)
+
+  let relatedArticles: any[] = []
+  if (article.tags.length > 0) {
+    const tagSlug = article.tags[0].slug
+    const allArticles = await fetchPublishedArticles()
+    relatedArticles = allArticles
+      .map(mapArticle)
+      .filter((a: any) => a.tags.some((t: any) => t.slug === tagSlug) && a.slug !== article.slug)
+      .slice(0, 3)
+  }
 
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-10">
-        {/* Main Content */}
         <article>
-          {/* Breadcrumb */}
           <nav className="flex items-center gap-2 text-sm text-slate mb-6">
             <a href="/" className="hover:text-accent transition-colors">Beranda</a>
             <span>/</span>
             <a href="/artikel" className="hover:text-accent transition-colors">Artikel</a>
             <span>/</span>
             <a
-              href={`/kategori/${article.category.slug}`}
+              href={"/kategori/" + article.category.slug}
               className="hover:text-accent transition-colors"
             >
               {article.category.name}
             </a>
           </nav>
 
-          {/* Title */}
           <h1 className="font-heading text-3xl md:text-4xl font-bold text-primary mb-4">
             {article.title}
           </h1>
 
-          {/* Metadata */}
           <div className="flex flex-wrap items-center gap-4 text-sm text-slate mb-8">
             <span>
               Oleh{' '}
               <a
-                href={`/kontributor/${article.author.slug}`}
+                href={"/kontributor/" + article.author.slug}
                 className="text-accent font-medium hover:underline"
               >
                 {article.author.name}
@@ -75,12 +81,11 @@ export default function ArticleDetailPage({ params }: Props) {
             <span>{article.readingTime} menit membaca</span>
           </div>
 
-          {/* Tags */}
           <div className="flex flex-wrap gap-2 mb-8">
-            {article.tags.map((tag) => (
+            {article.tags.map((tag: any) => (
               <a
                 key={tag.slug}
-                href={`/tag/${tag.slug}`}
+                href={"/tag/" + tag.slug}
                 className="bg-bg-alt text-slate hover:text-accent hover:bg-accent/10 px-3 py-1 rounded-full text-xs font-medium transition-colors"
               >
                 #{tag.name}
@@ -88,14 +93,13 @@ export default function ArticleDetailPage({ params }: Props) {
             ))}
           </div>
 
-          {/* Key Points */}
           {article.keyPoints.length > 0 && (
             <div className="bg-accent/5 border border-accent/20 rounded-xl p-6 mb-8">
               <h2 className="font-heading text-lg font-bold text-primary mb-3">
                 Poin Penting
               </h2>
               <ul className="space-y-2">
-                {article.keyPoints.map((point, i) => (
+                {article.keyPoints.map((point: string, i: number) => (
                   <li key={i} className="flex items-start gap-2 text-sm text-charcoal">
                     <span className="text-accent mt-1 shrink-0">&#10003;</span>
                     <span>{point}</span>
@@ -105,17 +109,15 @@ export default function ArticleDetailPage({ params }: Props) {
             </div>
           )}
 
-          {/* Content */}
           <ArticleContent content={article.content} />
 
-          {/* Dasar Hukum */}
           {article.sources.length > 0 && (
             <div className="mt-10 bg-bg-alt rounded-xl p-6">
               <h2 className="font-heading text-lg font-bold text-primary mb-3">
                 Dasar Hukum &amp; Referensi
               </h2>
               <ul className="space-y-2">
-                {article.sources.map((src, i) => (
+                {article.sources.map((src: any, i: number) => (
                   <li key={i}>
                     <a
                       href={src.url}
@@ -131,14 +133,13 @@ export default function ArticleDetailPage({ params }: Props) {
             </div>
           )}
 
-          {/* Glossary */}
           {article.glossary.length > 0 && (
             <div className="mt-6 bg-bg-alt rounded-xl p-6">
               <h2 className="font-heading text-lg font-bold text-primary mb-3">
                 Istilah dalam Artikel
               </h2>
               <dl className="space-y-3">
-                {article.glossary.map((g, i) => (
+                {article.glossary.map((g: any, i: number) => (
                   <div key={i}>
                     <dt className="font-semibold text-sm text-primary">{g.term}</dt>
                     <dd className="text-sm text-slate">{g.definition}</dd>
@@ -148,19 +149,16 @@ export default function ArticleDetailPage({ params }: Props) {
             </div>
           )}
 
-          {/* Disclaimer */}
           {article.disclaimer && (
             <div className="mt-6 border border-border rounded-xl p-4 text-sm text-slate">
               <strong className="text-charcoal">Disclaimer:</strong> {article.disclaimer}
             </div>
           )}
 
-          {/* Share */}
           <div className="mt-8 pt-6 border-t border-[#E2E5EC]">
             <ShareButtons title={article.title} />
           </div>
 
-          {/* Back link */}
           <div className="mt-8">
             <a
               href="/artikel"
@@ -171,7 +169,6 @@ export default function ArticleDetailPage({ params }: Props) {
           </div>
         </article>
 
-        {/* Sidebar */}
         <aside className="hidden lg:block">
           <div className="sticky top-24">
             <h3 className="font-heading text-lg font-bold text-primary mb-4">
@@ -179,10 +176,10 @@ export default function ArticleDetailPage({ params }: Props) {
             </h3>
             {relatedArticles.length > 0 ? (
               <div className="space-y-4">
-                {relatedArticles.map((rel) => (
+                {relatedArticles.map((rel: any) => (
                   <a
                     key={rel.id}
-                    href={`/artikel/${rel.slug}`}
+                    href={"/artikel/" + rel.slug}
                     className="block group"
                   >
                     <h4 className="text-sm font-medium text-charcoal group-hover:text-accent transition-colors">

@@ -1,60 +1,108 @@
-export async function apiGet(url: string) {
-  const token = localStorage.getItem('admin_token')
-  const res = await fetch(url, {
-    headers: token ? { Authorization: `Bearer ${token}` } : {},
-  })
-  if (!res.ok) throw new Error(await res.text())
-  return res.json()
+// API helper for client-side fetching
+// Use relative URLs so requests go to the same origin
+
+// ─── Generic API helpers for client components ──────────────
+
+export async function apiGet(path: string) {
+  const res = await fetch(path)
+  if (!res.ok) throw new Error(`API error: ${res.status}`)
+  const json = await res.json()
+  // Handle both { data: ... } wrapper and direct array responses
+  return json.data !== undefined ? json.data : json
 }
 
-export async function apiPost(url: string, body?: any) {
-  const token = localStorage.getItem('admin_token')
-  const res = await fetch(url, {
+export async function apiPost(path: string, body: any) {
+  const res = await fetch(path, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
-    body: body ? JSON.stringify(body) : undefined,
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
   })
-  if (!res.ok) throw new Error(await res.text())
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}))
+    throw new Error(err.error || `API error: ${res.status}`)
+  }
   return res.json()
 }
 
-export async function apiPut(url: string, body: any) {
-  const token = localStorage.getItem('admin_token')
-  const res = await fetch(url, {
+export async function apiPut(path: string, body: any) {
+  const res = await fetch(path, {
     method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
   })
-  if (!res.ok) throw new Error(await res.text())
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}))
+    throw new Error(err.error || `API error: ${res.status}`)
+  }
   return res.json()
 }
 
-export async function apiPatch(url: string, body: any) {
-  const token = localStorage.getItem('admin_token')
-  const res = await fetch(url, {
+export async function apiPatch(path: string, body: any) {
+  const res = await fetch(path, {
     method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
   })
-  if (!res.ok) throw new Error(await res.text())
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}))
+    throw new Error(err.error || `API error: ${res.status}`)
+  }
   return res.json()
 }
 
-export async function apiDelete(url: string) {
-  const token = localStorage.getItem('admin_token')
-  const res = await fetch(url, {
-    method: 'DELETE',
-    headers: token ? { Authorization: `Bearer ${token}` } : {},
-  })
-  if (!res.ok) throw new Error(await res.text())
+export async function apiDelete(path: string) {
+  const res = await fetch(path, { method: 'DELETE' })
+  if (!res.ok) throw new Error(`API error: ${res.status}`)
   return res.json()
+}
+
+// ─── JSON helpers ───────────────────────────────────────────
+
+export function safeParseJSON(str: string | undefined | null, fallback: any = []) {
+  if (!str) return fallback
+  try {
+    return JSON.parse(str)
+  } catch {
+    return fallback
+  }
+}
+
+// ─── Data mapping helpers ───────────────────────────────────
+
+export function mapArticle(article: any) {
+  return {
+    id: article.id,
+    title: article.title,
+    slug: article.slug,
+    excerpt: article.excerpt || '',
+    content: article.content || '',
+    cover: article.cover || '',
+    author: {
+      name: article.authorName || '',
+      slug: article.authorSlug || '',
+    },
+    category: article.category
+      ? { name: article.category.name, slug: article.category.slug }
+      : { name: article.categorySlug || '', slug: article.categorySlug || '' },
+    tags: article.tags || [],
+    publishedAt: article.publishedAt || '',
+    updatedAt: article.updatedAt || '',
+    status: article.status || 'published',
+    readingTime: article.readingTime || 0,
+    sources: safeParseJSON(article.sources, []),
+    glossary: safeParseJSON(article.glossary, []),
+    keyPoints: safeParseJSON(article.keyPoints, []),
+    disclaimer: article.disclaimer || undefined,
+  }
+}
+
+export function mapContributor(c: any) {
+  return {
+    name: c.name,
+    slug: c.slug,
+    bio: c.bio || '',
+    avatar: c.avatar || '',
+    articleCount: c.articleCount || 0,
+    joinedAt: c.joinedAt || '',
+  }
 }

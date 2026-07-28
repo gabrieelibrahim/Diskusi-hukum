@@ -1,12 +1,51 @@
 'use client'
 
-import { useState } from 'react'
-import { articles } from '@/data/articles'
-import { categories } from '@/data/content'
+import { useState, useEffect } from 'react'
 import ArticleCard from '@/components/ArticleCard'
+import { mapArticle } from '@/lib/api'
 
 export default function ArtikelPage() {
+  const [articles, setArticles] = useState<any[]>([])
+  const [categories, setCategories] = useState<any[]>([])
   const [activeCategory, setActiveCategory] = useState<string | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const [articlesRes, categoriesRes] = await Promise.all([
+          fetch('/api/articles?status=published'),
+          fetch('/api/categories'),
+        ])
+        const articlesJson = await articlesRes.json()
+        const categoriesJson = await categoriesRes.json()
+
+        const allArticles = (articlesJson.data || []).map(mapArticle)
+
+        // Compute article counts per category
+        const counts: Record<string, number> = {}
+        allArticles.forEach((a: any) => {
+          const slug = a.category.slug
+          counts[slug] = (counts[slug] || 0) + 1
+        })
+
+        const catsWithCount = (categoriesJson.data || []).map((c: any) => ({
+          name: c.name,
+          slug: c.slug,
+          description: c.description || '',
+          count: counts[c.slug] || 0,
+        }))
+
+        setArticles(allArticles)
+        setCategories(catsWithCount)
+      } catch (err) {
+        console.error('Gagal memuat data', err)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchData()
+  }, [])
 
   const sorted = [...articles]
     .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
@@ -21,7 +60,7 @@ export default function ArtikelPage() {
         Semua Artikel
       </h1>
       <p className="text-slate mb-8">
-        {filtered.length} artikel tersedia
+        {loading ? 'Memuat...' : `${filtered.length} artikel tersedia`}
       </p>
 
       {/* Category Filter */}
@@ -54,13 +93,21 @@ export default function ArtikelPage() {
       </div>
 
       {/* Articles Grid */}
+      {loading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <div key={i} className="bg-white rounded-xl border border-border overflow-hidden h-72 animate-pulse" />
+          ))}
+        </div>
+      ) : (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filtered.map((article) => (
           <ArticleCard key={article.id} article={article} />
         ))}
       </div>
+      )}
 
-      {filtered.length === 0 && (
+      {!loading && filtered.length === 0 && (
         <p className="text-center text-slate py-12">
           Tidak ada artikel dalam kategori ini.
         </p>

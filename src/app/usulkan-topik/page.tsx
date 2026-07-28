@@ -1,32 +1,43 @@
 'use client'
 
 import { useState } from 'react'
-import type { TopicSuggestion } from '@/lib/types'
 
 export default function UsulkanTopikPage() {
   const [form, setForm] = useState({ judul: '', deskripsi: '', nama: '', email: '' })
+  const [submitting, setSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const [error, setError] = useState('')
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     const { name, value } = e.target
     setForm((prev) => ({ ...prev, [name]: value }))
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    const suggestion: TopicSuggestion = {
-      id: crypto.randomUUID?.() || Date.now().toString(),
-      title: form.judul,
-      description: form.deskripsi,
-      name: form.nama,
-      email: form.email,
-      createdAt: new Date().toISOString(),
-      status: 'pending',
+    setSubmitting(true)
+    setError('')
+    try {
+      const res = await fetch('/api/suggestions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: form.judul,
+          description: form.deskripsi,
+          name: form.nama,
+          email: form.email,
+        }),
+      })
+      if (!res.ok) {
+        const err = await res.json()
+        throw new Error(err.error || 'Gagal mengirim usulan')
+      }
+      setSubmitted(true)
+    } catch (err: any) {
+      setError(err.message || 'Terjadi kesalahan')
+    } finally {
+      setSubmitting(false)
     }
-    const stored = JSON.parse(localStorage.getItem('topic-suggestions') || '[]')
-    stored.push(suggestion)
-    localStorage.setItem('topic-suggestions', JSON.stringify(stored))
-    setSubmitted(true)
   }
 
   if (submitted) {
@@ -58,6 +69,12 @@ export default function UsulkanTopikPage() {
       <p className="text-slate mb-8">
         Punya ide topik hukum yang ingin dibahas? Sampaikan kepada kami!
       </p>
+
+      {error && (
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6 text-sm">
+          {error}
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
@@ -126,9 +143,10 @@ export default function UsulkanTopikPage() {
 
         <button
           type="submit"
-          className="w-full bg-accent text-white font-semibold py-3 rounded-lg hover:bg-accent-600 transition-colors"
+          disabled={submitting}
+          className="w-full bg-accent text-white font-semibold py-3 rounded-lg hover:bg-accent-600 transition-colors disabled:opacity-50"
         >
-          Kirim Usulan
+          {submitting ? 'Mengirim...' : 'Kirim Usulan'}
         </button>
       </form>
     </div>

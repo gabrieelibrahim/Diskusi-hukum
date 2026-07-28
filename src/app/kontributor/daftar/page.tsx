@@ -1,31 +1,42 @@
 'use client'
 
 import { useState } from 'react'
-import type { Contributor } from '@/lib/types'
 
 export default function DaftarKontributorPage() {
   const [form, setForm] = useState({ nama: '', email: '', bio: '', bidang: '' })
+  const [submitting, setSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const [error, setError] = useState('')
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
     const { name, value } = e.target
     setForm((prev) => ({ ...prev, [name]: value }))
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    const slug = form.nama.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
-    const contributor: Contributor = {
-      name: form.nama,
-      slug,
-      bio: form.bio,
-      articleCount: 0,
-      joinedAt: new Date().toISOString().split('T')[0],
+    setSubmitting(true)
+    setError('')
+    try {
+      const res = await fetch('/api/contributors', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: form.nama,
+          email: form.email,
+          bio: form.bio,
+        }),
+      })
+      if (!res.ok) {
+        const err = await res.json()
+        throw new Error(err.error || 'Gagal mendaftar')
+      }
+      setSubmitted(true)
+    } catch (err: any) {
+      setError(err.message || 'Terjadi kesalahan')
+    } finally {
+      setSubmitting(false)
     }
-    const stored = JSON.parse(localStorage.getItem('contributors') || '[]')
-    stored.push(contributor)
-    localStorage.setItem('contributors', JSON.stringify(stored))
-    setSubmitted(true)
   }
 
   if (submitted) {
@@ -58,6 +69,12 @@ export default function DaftarKontributorPage() {
         Ingin bergabung sebagai kontributor? Isi formulir di bawah dan tim kami akan menghubungi
         Anda.
       </p>
+
+      {error && (
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6 text-sm">
+          {error}
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
@@ -134,9 +151,10 @@ export default function DaftarKontributorPage() {
 
         <button
           type="submit"
-          className="w-full bg-accent text-white font-semibold py-3 rounded-lg hover:bg-accent-600 transition-colors"
+          disabled={submitting}
+          className="w-full bg-accent text-white font-semibold py-3 rounded-lg hover:bg-accent-600 transition-colors disabled:opacity-50"
         >
-          Daftar Jadi Kontributor
+          {submitting ? 'Mendaftarkan...' : 'Daftar Jadi Kontributor'}
         </button>
       </form>
     </div>
