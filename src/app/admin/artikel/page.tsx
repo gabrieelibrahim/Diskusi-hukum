@@ -115,13 +115,13 @@ export default function AdminArtikelPage() {
           Kelola Artikel
         </h1>
         <div className="flex items-center gap-3">
-          <button
-            onClick={() => setShowForm(!showForm)}
+          <Link
+            href="/admin/artikel/tulis"
             className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#C9A84C] text-white text-sm font-medium rounded-lg hover:bg-[#B8963C] transition-colors"
           >
             <IconPlus size={18} />
             Tulis Artikel Baru
-          </button>
+          </Link>
         </div>
       </div>
 
@@ -258,10 +258,13 @@ export default function AdminArtikelPage() {
                   <td className="px-4 py-3 text-gray-500 hidden lg:table-cell">{a.publishedAt}</td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
-                      <button className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors">
+                      <Link
+                        href={`/admin/artikel/${a.slug}`}
+                        className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors"
+                      >
                         <IconEdit size={14} />
                         Edit
-                      </button>
+                      </Link>
                       <button
                         onClick={() => handleDelete(a.slug)}
                         className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg border border-red-200 text-red-600 hover:bg-red-50 transition-colors"
