@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { apiGet, apiPut } from '@/lib/api'
-import type { Article } from '@/lib/types'
+// API returns flat fields (authorName, categorySlug) not nested objects
 import {
   IconClipboardCheck,
   IconX,
@@ -14,7 +14,7 @@ import {
 } from '@tabler/icons-react'
 
 export default function AdminReviewPage() {
-  const [queue, setQueue] = useState<Article[]>([])
+  const [queue, setQueue] = useState<any[]>([])
   const [notes, setNotes] = useState<Record<string, string>>({})
   const [loading, setLoading] = useState(true)
 
@@ -30,7 +30,7 @@ export default function AdminReviewPage() {
     loadQueue()
   }, [])
 
-  const handleAccept = async (article: Article) => {
+  const handleAccept = async (article: any) => {
     const note = notes[article.id]
     if (note && !confirm(`Artikel akan diterbitkan. Catatan: "${note}"`)) return
     try {
@@ -41,7 +41,7 @@ export default function AdminReviewPage() {
     }
   }
 
-  const handleReject = async (article: Article) => {
+  const handleReject = async (article: any) => {
     const note = notes[article.id]
     if (!note) {
       alert('Silakan isi catatan review sebelum menolak.')
@@ -86,11 +86,11 @@ export default function AdminReviewPage() {
                 <div className="flex flex-wrap gap-4 mt-3 text-xs text-gray-400">
                   <span className="inline-flex items-center gap-1">
                     <IconUser size={13} />
-                    {article.author.name}
+                    {article.author?.name || article.authorName || '-'}
                   </span>
                   <span className="inline-flex items-center gap-1">
                     <IconFolder size={13} />
-                    {article.category.name}
+                    {article.category?.name || article.categorySlug || '-'}
                   </span>
                   <span className="inline-flex items-center gap-1">
                     <IconCalendar size={13} />

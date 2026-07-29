@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { apiGet, apiPost, apiDelete } from '@/lib/api'
-import type { Article } from '@/lib/types'
+// API returns flat fields (authorName, categorySlug) not nested objects
 import {
   IconFileText,
   IconEdit,
@@ -17,7 +17,7 @@ import {
 type ArticleStatus = 'all' | 'draft' | 'review' | 'published'
 
 export default function AdminArtikelPage() {
-  const [list, setList] = useState<Article[]>([])
+  const [list, setList] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [filter, setFilter] = useState<ArticleStatus>('all')
@@ -248,13 +248,13 @@ export default function AdminArtikelPage() {
                       <span className="font-medium text-gray-800 max-w-[220px] truncate">{a.title}</span>
                     </div>
                   </td>
-                  <td className="px-4 py-3 text-gray-500 hidden sm:table-cell">{a.category.name}</td>
+                  <td className="px-4 py-3 text-gray-500 hidden sm:table-cell">{a.category?.name || a.categorySlug || '-'}</td>
                   <td className="px-4 py-3">
                     <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${statusBadge(a.status)}`}>
                       {statusLabel(a.status)}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-gray-500 hidden md:table-cell">{a.author.name}</td>
+                  <td className="px-4 py-3 text-gray-500 hidden md:table-cell">{a.author?.name || a.authorName || '-'}</td>
                   <td className="px-4 py-3 text-gray-500 hidden lg:table-cell">{a.publishedAt}</td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">

@@ -107,7 +107,7 @@ export default function AdminDashboardPage() {
               {recentArticles.map((a: any) => (
                 <tr key={a.id} className="border-b border-gray-50 last:border-0 hover:bg-gray-50/50">
                   <td className="px-5 py-3.5 font-medium text-gray-800">{a.title}</td>
-                  <td className="px-5 py-3.5 text-gray-500 hidden sm:table-cell">{a.category}</td>
+                  <td className="px-5 py-3.5 text-gray-500 hidden sm:table-cell">{a.category?.name || a.categorySlug || '-'}</td>
                   <td className="px-5 py-3.5 hidden md:table-cell">
                     <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${statusBadge(a.status)}`}>{a.status}</span>
                   </td>

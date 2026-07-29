@@ -27,7 +27,7 @@ export default function EditArtikelPage() {
         setExcerpt(data.excerpt || '')
         setContent(data.content || '')
         setCategory(data.category?.name || data.category || '')
-        setAuthor(data.author?.name || data.author || '')
+        setAuthor(data.author?.name || data.authorName || '')
         setStatus(data.status || 'draft')
       })
       .catch(() => alert('Gagal memuat artikel'))
