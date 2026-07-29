@@ -1,7 +1,7 @@
 // Server-side API helper
 // For server components to fetch from the same app's API routes
 
-const BASE_URL = process.env.API_URL || 'http://localhost:3035'
+const BASE_URL = process.env.API_URL || 'http://localhost:3000'
 
 export async function fetchAPI(path: string) {
   const res = await fetch(`${BASE_URL}${path}`, { cache: 'no-store' })

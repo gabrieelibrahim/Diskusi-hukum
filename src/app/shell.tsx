@@ -18,7 +18,7 @@ import {
   IconScale,
   IconTool,
   IconClipboardCheck,
-  IconQuestionMark,
+  IconMessages,
 } from '@tabler/icons-react'
 
 export default function Shell({ children }: { children: ReactNode }) {
@@ -105,39 +105,6 @@ function Header() {
               </div>
             </div>
           </div>
-          {/* Sumber Dropdown */}
-          <div className="relative group">
-            <button className="flex items-center gap-1 hover:text-[#C9A84C] transition-colors duration-200">
-              Sumber ▾
-            </button>
-            <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 w-[600px] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-              <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6">
-                <div className="grid grid-cols-2 gap-4">
-                  {[
-                    { href: '/kamus', label: 'Dasar Hukum', desc: 'Kamus istilah & referensi hukum', icon: IconScale },
-                    { href: '/toolkit', label: 'Toolkit', desc: 'Panduan praktis & template', icon: IconTool },
-                    { href: '/toolkit', label: 'Checklist', desc: 'Daftar periksa hukum harian', icon: IconClipboardCheck },
-                    { href: '#', label: 'FAQ', desc: 'Pertanyaan yang sering diajukan', icon: IconQuestionMark },
-                  ].map((item) => (
-                    <a
-                      key={item.label}
-                      href={item.href}
-                      className="flex items-start gap-4 p-4 hover:bg-gray-50 rounded-xl transition-colors group/item"
-                    >
-                      <div className="w-10 h-10 rounded-xl bg-[#F5F6FA] flex items-center justify-center shrink-0 group-hover/item:bg-[#C9A84C]/10 transition-colors">
-                        <item.icon size={20} className="text-gray-500 group-hover/item:text-[#C9A84C]" stroke={1.5} />
-                      </div>
-                      <div>
-                        <p className="text-sm font-semibold text-gray-800 group-hover/item:text-[#C9A84C] transition-colors">{item.label}</p>
-                        <p className="text-xs text-gray-500 mt-0.5">{item.desc}</p>
-                      </div>
-                    </a>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-
           {/* Komunitas Dropdown */}
           <div className="relative group">
             <button className="flex items-center gap-1 hover:text-[#C9A84C] transition-colors duration-200">
@@ -179,6 +146,10 @@ function Header() {
               </div>
             </div>
           </div>
+          {/* Konsultasi */}
+          <a href="/konsultasi" className="hover:text-[#C9A84C] transition-colors duration-200">
+            Konsultasi
+          </a>
         </div>
 
         {/* Search + CTA */}
@@ -246,9 +217,9 @@ function Footer() {
             <h4 className="font-heading text-sm font-semibold mb-3 text-white">Navigasi</h4>
             <ul className="space-y-2 text-sm text-[#8490B1]">
               <li><a href="/artikel" className="hover:text-[#C9A84C] transition-colors duration-200">Artikel</a></li>
-              <li><a href="/kamus" className="hover:text-[#C9A84C] transition-colors duration-200">Kamus Hukum</a></li>
-              <li><a href="/toolkit" className="hover:text-[#C9A84C] transition-colors duration-200">Toolkit</a></li>
               <li><a href="/agenda" className="hover:text-[#C9A84C] transition-colors duration-200">Agenda</a></li>
+              <li><a href="/konsultasi" className="hover:text-[#C9A84C] transition-colors duration-200">Konsultasi</a></li>
+              <li><a href="/artikel" className="hover:text-[#C9A84C] transition-colors duration-200">Artikel</a></li>
             </ul>
           </div>
           <div>

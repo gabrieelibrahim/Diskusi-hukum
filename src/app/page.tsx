@@ -197,23 +197,24 @@ export default function HomePage() {
       </section>
       </FadeInView>
 
-      {/* CTA */}
+      {/* CTA — Join Community via WhatsApp */}
       <FadeInView>
       <section className="py-16" style={{ backgroundColor: '#1B2A4A' }}>
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="font-heading text-2xl md:text-3xl font-bold text-white mb-4">
-            Ingin Berkontribusi?
+            Ingin Bergabung?
           </h2>
           <p className="text-[#8490B1] max-w-xl mx-auto mb-8 text-pretty">
-            Bagikan pengetahuan hukum Anda bersama komunitas. Jadi kontributor dan bantu masyarakat
-            memahami hukum Indonesia.
+            Gabung komunitas Diskusi Hukum dan ikut serta dalam diskusi interaktif bersama seluruh elemen masyarakat hukum.
           </p>
           <a
-            href="/kontributor/daftar"
+            href="https://wa.me/6285802042005"
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-block text-white font-semibold px-8 py-3 rounded-lg transition-all duration-200 hover:brightness-110"
             style={{ backgroundColor: '#C9A84C' }}
           >
-            Daftar Jadi Kontributor
+            Gabung via WhatsApp
           </a>
         </div>
       </section>

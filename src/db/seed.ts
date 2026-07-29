@@ -413,26 +413,28 @@ export async function seed() {
   }
   console.log(`[seed] Inserted ${articleData.length} articles with tag associations`)
 
-  // ── 6. Events ────────────────────────────────────────────
+  // ── 6. Events (20 dummy) ─────────────────────────────────
   const eventRows: NewEvent[] = [
-    {
-      title: 'Diskusi Bulanan: Perlindungan Data Pribadi di Era Digital',
-      slug: 'diskusi-perlindungan-data-digital',
-      date: '2026-08-15',
-      time: '19:00 - 21:00 WIB',
-      description: 'Diskusi santai membahas UU PDP dan implementasinya dalam kehidupan sehari-hari. Terbuka untuk umum.',
-      type: 'diskusi',
-      link: '#',
-    },
-    {
-      title: 'Workshop: Cara Membaca Kontrak Kerja',
-      slug: 'workshop-membaca-kontrak-kerja',
-      date: '2026-08-29',
-      time: '10:00 - 12:00 WIB',
-      description: 'Workshop interaktif membedah klausul-klausul kontrak kerja yang sering menimbulkan masalah.',
-      type: 'workshop',
-      link: null,
-    },
+    { title: 'Diskusi Bulanan: Perlindungan Data Pribadi di Era Digital', slug: 'diskusi-perlindungan-data-digital', date: '2026-08-15', time: '19:00 - 21:00 WIB', description: 'Diskusi santai membahas UU PDP dan implementasinya dalam kehidupan sehari-hari.', type: 'diskusi', link: '#' },
+    { title: 'Workshop: Cara Membaca Kontrak Kerja', slug: 'workshop-membaca-kontrak-kerja', date: '2026-08-29', time: '10:00 - 12:00 WIB', description: 'Workshop interaktif membedah klausul kontrak kerja yang sering menimbulkan masalah.', type: 'workshop', link: null },
+    { title: 'Seminar: Pembaharuan Hukum Acara Pidana', slug: 'seminar-hukum-acara-pidana', date: '2026-09-05', time: '09:00 - 12:00 WIB', description: 'Seminar nasional membahas perkembangan dan pembaharuan hukum acara pidana di Indonesia.', type: 'seminar', link: null },
+    { title: 'Diskusi: Mitos dan Fakta Seputar Hukum Waris', slug: 'diskusi-hukum-waris', date: '2026-09-12', time: '16:00 - 18:00 WIB', description: 'Mengupas mitos-mitos di masyarakat seputar hukum waris dan pembagian harta.', type: 'diskusi', link: '#' },
+    { title: 'Workshop: Legal Drafting untuk Pemula', slug: 'workshop-legal-drafting', date: '2026-09-19', time: '10:00 - 15:00 WIB', description: 'Pelatihan praktis menyusun kontrak dan dokumen hukum dasar.', type: 'workshop', link: null },
+    { title: 'Diskusi: Perlindungan Konsumen di Era Marketplace', slug: 'diskusi-perlindungan-konsumen-marketplace', date: '2026-09-26', time: '19:00 - 21:00 WIB', description: 'Membahas hak konsumen saat bertransaksi di marketplace dan langkah hukum jika sengketa.', type: 'diskusi', link: '#' },
+    { title: 'Seminar: Ketenagakerjaan Pasca UU Cipta Kerja', slug: 'seminar-ketenagakerjaan-cipta-kerja', date: '2026-10-03', time: '09:00 - 12:00 WIB', description: 'Update regulasi ketenagakerjaan setelah UU Cipta Kerja.', type: 'seminar', link: null },
+    { title: 'Diskusi: Hak Digital dan Privasi di Media Sosial', slug: 'diskusi-hak-digital-privasi', date: '2026-10-10', time: '19:00 - 21:00 WIB', description: 'Perlindungan data pribadi dan hak digital di era media sosial.', type: 'diskusi', link: '#' },
+    { title: 'Workshop: Teknik Negosiasi Kontrak Bisnis', slug: 'workshop-negosiasi-kontrak', date: '2026-10-17', time: '10:00 - 14:00 WIB', description: 'Teknik negosiasi kontrak bisnis untuk pelaku usaha dan legal officer.', type: 'workshop', link: null },
+    { title: 'Diskusi: Bedah Kasus Hukum Pidana Terkini', slug: 'diskusi-bedah-kasus-pidana', date: '2026-10-24', time: '19:00 - 21:00 WIB', description: 'Bedah kasus pidana hangat dari perspektif hukum dan sosial.', type: 'diskusi', link: '#' },
+    { title: 'Seminar: Hukum Investasi dan Perlindungan Investor', slug: 'seminar-hukum-investasi', date: '2026-11-07', time: '09:00 - 12:00 WIB', description: 'Aspek hukum investasi dan perlindungan investor.', type: 'seminar', link: null },
+    { title: 'Diskusi: Kekerasan Berbasis Gender dan Perlindungan Hukum', slug: 'diskusi-kekerasan-gender', date: '2026-11-14', time: '19:00 - 21:00 WIB', description: 'Perlindungan hukum bagi korban kekerasan berbasis gender.', type: 'diskusi', link: '#' },
+    { title: 'Workshop: Persiapan Ujian Profesi Advokat', slug: 'workshop-ujian-profesi-advokat', date: '2026-11-21', time: '09:00 - 16:00 WIB', description: 'Workshop intensif persiapan ujian profesi advokat.', type: 'workshop', link: null },
+    { title: 'Diskusi: Pembaharuan Hukum Keluarga di Indonesia', slug: 'diskusi-hukum-keluarga', date: '2026-11-28', time: '19:00 - 21:00 WIB', description: 'Isu terkini pembaharuan hukum keluarga, perceraian, dan hak asuh anak.', type: 'diskusi', link: '#' },
+    { title: 'Seminar: Refleksi Penegakan Hukum 2026', slug: 'seminar-refleksi-penegakan-hukum', date: '2026-12-12', time: '09:00 - 13:00 WIB', description: 'Refleksi tahunan penegakan hukum di Indonesia.', type: 'seminar', link: null },
+    { title: 'Diskusi: Mediasi sebagai Alternatif Penyelesaian Sengketa', slug: 'diskusi-mediasi-sengketa', date: '2026-12-19', time: '19:00 - 21:00 WIB', description: 'Efektivitas mediasi sebagai alternatif penyelesaian sengketa.', type: 'diskusi', link: '#' },
+    { title: 'Ngobrol Hukum: Tips Memilih Pengacara', slug: 'ngobrol-hukum-memilih-pengacara', date: '2026-12-27', time: '16:00 - 18:00 WIB', description: 'Tips memilih pengacara yang tepat untuk kebutuhan hukum Anda.', type: 'diskusi', link: '#' },
+    { title: 'Workshop: Legalitas UMKM dan Badan Usaha', slug: 'workshop-legalitas-umkm', date: '2027-01-09', time: '10:00 - 14:00 WIB', description: 'Pengurusan legalitas usaha bagi UMKM.', type: 'workshop', link: null },
+    { title: 'Diskusi: Etika Profesi Hukum di Era Digital', slug: 'diskusi-etika-profesi-hukum', date: '2027-01-16', time: '19:00 - 21:00 WIB', description: 'Tantangan etika profesi hukum di era digital.', type: 'diskusi', link: '#' },
+    { title: 'Seminar: Prospek Karir di Dunia Hukum', slug: 'seminar-prospek-karir-hukum', date: '2027-01-23', time: '09:00 - 12:00 WIB', description: 'Prospek karir di dunia hukum untuk mahasiswa dan fresh graduate.', type: 'seminar', link: null },
   ]
 
   for (const e of eventRows) {

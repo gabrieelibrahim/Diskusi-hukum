@@ -88,17 +88,18 @@ export default function TentangPage() {
 
       <section className="bg-accent/5 border border-accent/20 rounded-xl p-8 text-center">
         <h2 className="font-heading text-2xl font-bold text-primary mb-4">
-          Ingin Berkontribusi?
+          Ingin Bergabung?
         </h2>
         <p className="text-charcoal mb-6 max-w-lg mx-auto">
-          Kami terbuka untuk kontributor yang ingin menulis artikel, berbagi pengetahuan, atau
-          terlibat dalam diskusi komunitas.
+          Gabung komunitas Diskusi Hukum dan ikut serta dalam diskusi interaktif bersama seluruh elemen masyarakat hukum.
         </p>
         <a
-          href="/kontributor/daftar"
+          href="https://wa.me/6285802042005"
+          target="_blank"
+          rel="noopener noreferrer"
           className="inline-block bg-accent text-white font-semibold px-8 py-3 rounded-lg hover:bg-accent-600 transition-colors"
         >
-          Daftar Jadi Kontributor
+          Gabung via WhatsApp
         </a>
       </section>
     </div>
