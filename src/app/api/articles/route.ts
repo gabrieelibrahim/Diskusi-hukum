@@ -22,6 +22,7 @@ export async function GET(request: NextRequest) {
     const q = searchParams.get('q')
     const categorySlug = searchParams.get('category')
     const tagSlug = searchParams.get('tag')
+    const sort = searchParams.get('sort') // 'popular' | 'latest'
     const limit = Math.min(Number(searchParams.get('limit')) || 50, 100)
     const offset = Number(searchParams.get('offset')) || 0
 
@@ -59,12 +60,16 @@ export async function GET(request: NextRequest) {
 
     const total = countResult?.count ?? 0
 
-    // Fetch articles
+    // Fetch articles — sort by popular (views) or latest (publishedAt)
+    const orderByClause = sort === 'popular'
+      ? desc(articles.views)
+      : desc(articles.publishedAt)
+
     const rows = await db
       .select()
       .from(articles)
       .where(and(...conditions))
-      .orderBy(desc(articles.publishedAt))
+      .orderBy(orderByClause)
       .limit(limit)
       .offset(offset)
 

@@ -17,14 +17,13 @@ export default function TentangPage() {
           Apa Itu Diskusi Hukum?
         </h2>
         <p className="text-charcoal leading-relaxed mb-4">
-          Diskusi Hukum adalah komunitas belajar hukum Indonesia yang bertujuan membuat
-          pengetahuan hukum dapat diakses oleh semua orang. Kami percaya bahwa pemahaman hukum
-          adalah hak setiap warga negara, bukan hanya milik para akademisi dan praktisi.
+          Diskusi hukum adalah ruang dialog interaktif dan wadah bertukar pikiran yang secara terbuka mempertemukan seluruh elemen masyarakat hukum, mulai dari calon maba, maba, mahasiswa, lulusan hukum, praktisi, hingga para penegak hukum.
+        </p>
+        <p className="text-charcoal leading-relaxed mb-4">
+          Melalui platform ini, berbagai generasi dan latar belakang keahlian dapat saling berdialog untuk menguji argumen normatif, membedah kasus, serta mengaitkan teori akademis dengan realitas penegakan hukum di lapangan.
         </p>
         <p className="text-charcoal leading-relaxed">
-          Website ini menyajikan artikel-artikel hukum yang ditulis dengan bahasa yang jelas,
-          aplikatif, dan mudah dipahami. Setiap artikel ditulis atau dikurasi oleh kontributor
-          yang memiliki latar belakang hukum dan telah melalui proses editorial.
+          Lebih dari sekadar ajang penyampaian opini, forum ini hadir sebagai ekosistem komprehensif untuk mengurai kompleksitas regulasi, menjembatani pemahaman antar-generasi hukum, serta merumuskan pemikiran-pemikiran kritis yang mendorong terwujudnya keadilan, kepastian, dan kemanfaatan hukum secara nyata.
         </p>
       </section>
 
@@ -56,10 +55,20 @@ export default function TentangPage() {
         <h2 className="font-heading text-2xl font-bold text-primary mb-4">
           Visi
         </h2>
-        <p className="text-charcoal leading-relaxed">
-          Menjadi platform edukasi hukum terkemuka di Indonesia yang memberdayakan masyarakat
-          dengan pengetahuan hukum yang aplikatif dan dapat diandalkan.
-        </p>
+        <ul className="space-y-4 text-charcoal">
+          <li className="flex items-start gap-3">
+            <span className="text-accent mt-1 shrink-0">&#10003;</span>
+            <span>Menjadi ekosistem diskusi hukum digital terdepan dan inklusif yang menghubungkan lintas generasi hukum, guna mewujudkan masyarakat yang kritis, melek literasi, dan berkeadilan.</span>
+          </li>
+          <li className="flex items-start gap-3">
+            <span className="text-accent mt-1 shrink-0">&#10003;</span>
+            <span>Menjadi pusat rujukan dialog dan pertukaran pemikiran hukum yang mensinergikan gagasan akademis dengan praktik penegakan hukum, demi mendorong pembaharuan hukum yang progresif.</span>
+          </li>
+          <li className="flex items-start gap-3">
+            <span className="text-accent mt-1 shrink-0">&#10003;</span>
+            <span>Membangun wadah interaktif yang menjembatani kesenjangan pemahaman antara teori dan praktik, serta menjadi ruang bertumbuh bagi seluruh elemen masyarakat hukum.</span>
+          </li>
+        </ul>
       </section>
 
       <section className="mb-10">

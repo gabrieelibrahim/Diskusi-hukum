@@ -35,6 +35,7 @@ export const articles = sqliteTable('articles', {
   sources: text('sources'),       // JSON string
   glossary: text('glossary'),     // JSON string
   keyPoints: text('key_points'),  // JSON string
+  views: integer('views').default(0),
 })
 
 // ─── Article-Tags (M:M) ───────────────────────────────────

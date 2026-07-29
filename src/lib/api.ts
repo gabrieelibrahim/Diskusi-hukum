@@ -1,21 +1,35 @@
 // API helper for client-side fetching
 // Use relative URLs so requests go to the same origin
 
+function authHeaders(): Record<string, string> {
+  if (typeof window === 'undefined') return {}
+  const token = localStorage.getItem('admin_token')
+  return token ? { Authorization: `Bearer ${token}` } : {}
+}
+
 // ─── Generic API helpers for client components ──────────────
 
 export async function apiGet(path: string) {
-  const res = await fetch(path)
-  if (!res.ok) throw new Error(`API error: ${res.status}`)
+  const res = await fetch(path, {
+    headers: { ...authHeaders() },
+  })
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}))
+    throw new Error(err.error || `API error: ${res.status}`)
+  }
   const json = await res.json()
   // Handle both { data: ... } wrapper and direct array responses
   return json.data !== undefined ? json.data : json
 }
 
-export async function apiPost(path: string, body: any) {
+export async function apiPost(path: string, body?: any) {
   const res = await fetch(path, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
+    headers: {
+      'Content-Type': 'application/json',
+      ...authHeaders(),
+    },
+    body: body ? JSON.stringify(body) : undefined,
   })
   if (!res.ok) {
     const err = await res.json().catch(() => ({}))
@@ -27,7 +41,10 @@ export async function apiPost(path: string, body: any) {
 export async function apiPut(path: string, body: any) {
   const res = await fetch(path, {
     method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      ...authHeaders(),
+    },
     body: JSON.stringify(body),
   })
   if (!res.ok) {
@@ -40,7 +57,10 @@ export async function apiPut(path: string, body: any) {
 export async function apiPatch(path: string, body: any) {
   const res = await fetch(path, {
     method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      ...authHeaders(),
+    },
     body: JSON.stringify(body),
   })
   if (!res.ok) {
@@ -51,8 +71,14 @@ export async function apiPatch(path: string, body: any) {
 }
 
 export async function apiDelete(path: string) {
-  const res = await fetch(path, { method: 'DELETE' })
-  if (!res.ok) throw new Error(`API error: ${res.status}`)
+  const res = await fetch(path, {
+    method: 'DELETE',
+    headers: { ...authHeaders() },
+  })
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}))
+    throw new Error(err.error || `API error: ${res.status}`)
+  }
   return res.json()
 }
 

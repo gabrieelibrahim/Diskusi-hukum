@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/db'
 import { articles, tags, articleTags, categories } from '@/db/schema'
-import { eq } from 'drizzle-orm'
+import { eq, sql } from 'drizzle-orm'
 import { verifyAuth } from '@/middleware/auth'
 
 // GET /api/articles/[slug] — single article by slug
@@ -39,6 +39,21 @@ export async function GET(
     })
   } catch (error) {
     console.error('[articles/slug/GET]', error)
+    return NextResponse.json({ error: 'Terjadi kesalahan server' }, { status: 500 })
+  }
+}
+
+// PATCH /api/articles/[slug]/view — increment article views (public)
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: { slug: string } },
+) {
+  try {
+    const { slug } = params
+    await db.update(articles).set({ views: sql`views + 1` }).where(eq(articles.slug, slug))
+    return NextResponse.json({ success: true })
+  } catch (error) {
+    console.error('[articles/slug/PATCH]', error)
     return NextResponse.json({ error: 'Terjadi kesalahan server' }, { status: 500 })
   }
 }

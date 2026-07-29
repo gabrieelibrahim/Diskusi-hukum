@@ -13,6 +13,8 @@ module.exports = {
         heading: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
         body: ['Merriweather', 'Georgia', 'serif'],
         sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+        display: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+        inter: ['Inter', 'system-ui', 'sans-serif'],
       },
     },
   },
