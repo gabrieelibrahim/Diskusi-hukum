@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import ArticleCard from '@/components/ArticleCard'
-import CategoryGrid from '@/components/CategoryGrid'
 import FadeInView from '@/components/FadeInView'
 import ArticleCarousel from '@/components/ArticleCarousel'
 import { mapArticle } from '@/lib/api'
@@ -10,41 +9,23 @@ import { mapArticle } from '@/lib/api'
 export default function HomePage() {
   const [articles, setArticles] = useState<any[]>([])
   const [popularArticles, setPopularArticles] = useState<any[]>([])
-  const [categories, setCategories] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const [articlesRes, popularRes, categoriesRes] = await Promise.all([
+        const [articlesRes, popularRes] = await Promise.all([
           fetch('/api/articles?status=published'),
           fetch('/api/articles?status=published&sort=popular&limit=10'),
-          fetch('/api/categories'),
         ])
         const articlesJson = await articlesRes.json()
         const popularJson = await popularRes.json()
-        const categoriesJson = await categoriesRes.json()
 
         const allArticles = (articlesJson.data || []).map(mapArticle)
         const popular = (popularJson.data || []).map(mapArticle)
 
-        // Compute article counts per category
-        const counts: Record<string, number> = {}
-        allArticles.forEach((a: any) => {
-          const slug = a.category.slug
-          counts[slug] = (counts[slug] || 0) + 1
-        })
-
-        const catsWithCount = (categoriesJson.data || []).map((c: any) => ({
-          name: c.name,
-          slug: c.slug,
-          description: c.description || '',
-          count: counts[c.slug] || 0,
-        }))
-
         setArticles(allArticles)
         setPopularArticles(popular)
-        setCategories(catsWithCount)
       } catch (err) {
         console.error('Gagal memuat data', err)
       } finally {
@@ -84,7 +65,7 @@ export default function HomePage() {
               </h1>
 
               <h2 className="font-display font-medium leading-[1.15] mb-5" style={{ color: '#16253F', fontSize: 'clamp(1.3rem, 3vw, 2.2rem)' }}>
-                Tentang Kevin Wong
+                Tentang Founder
               </h2>
 
               <div className="space-y-4 font-inter text-[15px] leading-[1.8] max-w-[580px]" style={{ color: '#666666' }}>
@@ -183,18 +164,6 @@ export default function HomePage() {
         </div>
       </section>
       )}
-      </FadeInView>
-
-      {/* Categories */}
-      <FadeInView>
-      <section className="py-16 bg-white">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h2 className="font-heading text-2xl md:text-3xl font-bold mb-8" style={{ color: '#1B2A4A' }}>
-            Jelajahi Kategori
-          </h2>
-          <CategoryGrid categories={categories} />
-        </div>
-      </section>
       </FadeInView>
 
       {/* CTA — Join Community via WhatsApp */}

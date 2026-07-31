@@ -19,6 +19,9 @@ import {
   IconTool,
   IconClipboardCheck,
   IconMessages,
+  IconBrandInstagram,
+  IconBrandTiktok,
+  IconBrandWhatsapp,
 } from '@tabler/icons-react'
 
 export default function Shell({ children }: { children: ReactNode }) {
@@ -212,6 +215,35 @@ function Footer() {
             <p className="text-sm text-[#8490B1] leading-relaxed">
               Komunitas belajar hukum Indonesia. Memahami hukum dengan bahasa yang jelas dan aplikatif.
             </p>
+            <div className="flex items-center gap-3 mt-5">
+              <a
+                href="https://wa.me/6285802042005"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="WhatsApp Diskusi Hukum"
+                className="w-10 h-10 rounded-full border border-white/15 flex items-center justify-center text-[#8490B1] hover:text-[#C9A84C] hover:border-[#C9A84C]/60 transition-all duration-200"
+              >
+                <IconBrandWhatsapp size={18} />
+              </a>
+              <a
+                href="https://www.instagram.com/diskusihukum.id"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram Diskusi Hukum"
+                className="w-10 h-10 rounded-full border border-white/15 flex items-center justify-center text-[#8490B1] hover:text-[#C9A84C] hover:border-[#C9A84C]/60 transition-all duration-200"
+              >
+                <IconBrandInstagram size={18} />
+              </a>
+              <a
+                href="https://www.tiktok.com/@diskusihukum.id"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="TikTok Diskusi Hukum"
+                className="w-10 h-10 rounded-full border border-white/15 flex items-center justify-center text-[#8490B1] hover:text-[#C9A84C] hover:border-[#C9A84C]/60 transition-all duration-200"
+              >
+                <IconBrandTiktok size={18} />
+              </a>
+            </div>
           </div>
           <div>
             <h4 className="font-heading text-sm font-semibold mb-3 text-white">Navigasi</h4>
