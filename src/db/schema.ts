@@ -70,6 +70,7 @@ export const events = sqliteTable('events', {
   description: text('description'),
   type: text('type'),             // diskusi | seminar | workshop
   link: text('link'),
+  cover: text('cover'),
 })
 
 // ─── Topic Suggestions ────────────────────────────────────

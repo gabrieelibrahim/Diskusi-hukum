@@ -5,7 +5,7 @@ import StarterKit from '@tiptap/starter-kit'
 import LinkExtension from '@tiptap/extension-link'
 import ImageExtension from '@tiptap/extension-image'
 import Placeholder from '@tiptap/extension-placeholder'
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import {
   IconBold,
   IconItalic,
@@ -18,6 +18,7 @@ import {
   IconHeading,
   IconMinus,
   IconCode,
+  IconUpload,
 } from '@tabler/icons-react'
 
 interface Props {
@@ -36,6 +37,8 @@ export default function TiptapEditor({ content, onChange }: Props) {
     content,
     onUpdate: ({ editor }) => onChange(editor.getHTML()),
   })
+  const [uploading, setUploading] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   if (!editor) return null
 
@@ -44,9 +47,39 @@ export default function TiptapEditor({ content, onChange }: Props) {
     if (url) editor.chain().focus().setLink({ href: url }).run()
   }
 
-  const addImage = () => {
-    const url = window.prompt('Masukkan URL gambar:')
-    if (url) editor.chain().focus().setImage({ src: url }).run()
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    e.target.value = ''
+    if (!file) return
+    if (!file.type.startsWith('image/')) {
+      alert('Hanya file gambar yang diizinkan.')
+      return
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      alert('Ukuran file maksimal 10MB.')
+      return
+    }
+    setUploading(true)
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+      const token = localStorage.getItem('admin_token')
+      const res = await fetch('/api/media', {
+        method: 'POST',
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+        body: formData,
+      })
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}))
+        throw new Error(err.error || 'Upload gagal')
+      }
+      const json = await res.json()
+      editor.chain().focus().setImage({ src: json.data.path }).run()
+    } catch (err: any) {
+      alert(err.message || 'Upload gagal')
+    } finally {
+      setUploading(false)
+    }
   }
 
   const ToolBtn = ({ onClick, active, label, children }: any) => (
@@ -99,9 +132,17 @@ export default function TiptapEditor({ content, onChange }: Props) {
         <ToolBtn onClick={addLink} active={editor.isActive('link')} label="Link">
           <IconLink size={18} />
         </ToolBtn>
-        <ToolBtn onClick={addImage} active={false} label="Image">
-          <IconPhoto size={18} />
+        <ToolBtn onClick={() => fileInputRef.current?.click()} active={false} label={uploading ? 'Mengupload...' : 'Upload Gambar'}>
+          {uploading ? <IconUpload size={18} /> : <IconPhoto size={18} />}
         </ToolBtn>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={handleImageUpload}
+          disabled={uploading}
+        />
       </div>
 
       {/* Editor content */}

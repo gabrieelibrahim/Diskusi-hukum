@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { title, slug, date, time, description, type, link } = body
+    const { title, slug, date, time, description, type, link, cover } = body
 
     if (!title || !slug || !date) {
       return NextResponse.json({ error: 'Judul, slug, dan tanggal wajib diisi' }, { status: 400 })
@@ -63,12 +63,63 @@ export async function POST(request: NextRequest) {
         description: description ?? '',
         type: type ?? 'diskusi',
         link: link ?? null,
+        cover: cover ?? null,
       })
       .returning()
 
     return NextResponse.json({ data: inserted[0] }, { status: 201 })
   } catch (error) {
     console.error('[events/POST]', error)
+    return NextResponse.json({ error: 'Terjadi kesalahan server' }, { status: 500 })
+  }
+}
+
+// PATCH /api/events — update event (auth required)
+export async function PATCH(request: NextRequest) {
+  try {
+    const user = verifyAuth(request)
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const body = await request.json()
+    const id = body.id
+
+    if (!id) {
+      return NextResponse.json({ error: 'ID event wajib diisi' }, { status: 400 })
+    }
+
+    const existing = await db.select().from(events).where(eq(events.id, Number(id))).get()
+    if (!existing) {
+      return NextResponse.json({ error: 'Event tidak ditemukan' }, { status: 404 })
+    }
+
+    const updateData: Record<string, any> = {
+      title: body.title ?? existing.title,
+      date: body.date ?? existing.date,
+      time: body.time ?? existing.time,
+      description: body.description ?? existing.description,
+      type: body.type ?? existing.type,
+      link: body.link !== undefined ? body.link : existing.link,
+      cover: body.cover !== undefined ? body.cover : existing.cover,
+    }
+
+    // Handle slug change with uniqueness check
+    if (body.slug && body.slug !== existing.slug) {
+      const slugExists = await db.select().from(events).where(eq(events.slug, body.slug)).get()
+      if (slugExists) {
+        return NextResponse.json({ error: 'Slug sudah digunakan' }, { status: 409 })
+      }
+      updateData.slug = body.slug
+    }
+
+    await db.update(events).set(updateData).where(eq(events.id, Number(id)))
+
+    const updated = await db.select().from(events).where(eq(events.id, Number(id))).get()
+
+    return NextResponse.json({ data: updated })
+  } catch (error) {
+    console.error('[events/PATCH]', error)
     return NextResponse.json({ error: 'Terjadi kesalahan server' }, { status: 500 })
   }
 }

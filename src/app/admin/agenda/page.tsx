@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { apiGet, apiPost, apiDelete } from '@/lib/api'
+import { apiGet, apiPost, apiPatch, apiDelete } from '@/lib/api'
+import ImageUploader from '@/components/ImageUploader'
 import type { Event } from '@/lib/types'
 import {
   IconCalendarEvent,
@@ -26,6 +27,7 @@ export default function AdminAgendaPage() {
     description: '',
     type: 'diskusi' as Event['type'],
     link: '',
+    cover: '',
   }
 
   const [form, setForm] = useState(emptyForm)
@@ -59,6 +61,7 @@ export default function AdminAgendaPage() {
       description: e.description,
       type: e.type,
       link: e.link || '',
+      cover: (e as any).cover || '',
     })
     setEditingId(e.id)
     setShowForm(true)
@@ -68,15 +71,23 @@ export default function AdminAgendaPage() {
     e.preventDefault()
     if (!form.title.trim() || !form.date) return
 
+    const payload = {
+      title: form.title.trim(),
+      slug: slugify(form.title.trim()),
+      date: form.date,
+      time: form.time,
+      description: form.description.trim(),
+      type: form.type,
+      link: form.link.trim() || null,
+      cover: form.cover || null,
+    }
+
     try {
-      await apiPost('/api/events', {
-        title: form.title.trim(),
-        date: form.date,
-        time: form.time,
-        description: form.description.trim(),
-        type: form.type,
-        link: form.link.trim() || undefined,
-      })
+      if (editingId) {
+        await apiPatch('/api/events', { ...payload, id: editingId })
+      } else {
+        await apiPost('/api/events', payload)
+      }
       setShowForm(false)
       setForm(emptyForm)
       setEditingId(null)
@@ -207,6 +218,9 @@ export default function AdminAgendaPage() {
                 placeholder="https://..."
                 className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/20 focus:border-[#C9A84C]"
               />
+            </div>
+            <div className="sm:col-span-2">
+              <ImageUploader value={form.cover} onChange={(url) => setForm({ ...form, cover: url })} label="Foto agenda (opsional)" />
             </div>
           </div>
 

@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { apiPost } from '@/lib/api'
 import TiptapEditor from '@/components/TiptapEditor'
+import ImageUploader from '@/components/ImageUploader'
 import { IconArrowLeft, IconDeviceFloppy } from '@tabler/icons-react'
 
 export default function TulisArtikelPage() {
@@ -14,6 +15,7 @@ export default function TulisArtikelPage() {
   const [tags, setTags] = useState('')
   const [author, setAuthor] = useState('')
   const [content, setContent] = useState('')
+  const [cover, setCover] = useState('')
   const [saving, setSaving] = useState(false)
 
   const handleSave = async (status: 'draft' | 'review') => {
@@ -28,6 +30,7 @@ export default function TulisArtikelPage() {
         excerpt: excerpt.trim(),
         content,
         category,
+        cover,
         authorName: author.trim(),
         tags: tags.split(',').map(t => t.trim()).filter(Boolean),
         status,
@@ -95,6 +98,11 @@ export default function TulisArtikelPage() {
 
         {/* Sidebar */}
         <div className="space-y-5">
+          <div className="bg-white rounded-xl border border-gray-200 p-5 space-y-4">
+            <h3 className="font-semibold text-sm text-gray-800">Foto Sampul</h3>
+            <ImageUploader value={cover} onChange={setCover} label="Foto artikel" />
+          </div>
+
           <div className="bg-white rounded-xl border border-gray-200 p-5 space-y-4">
             <h3 className="font-semibold text-sm text-gray-800">Pengaturan</h3>
             <div>

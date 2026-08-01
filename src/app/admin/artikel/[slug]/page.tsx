@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { apiGet, apiPut } from '@/lib/api'
 import TiptapEditor from '@/components/TiptapEditor'
+import ImageUploader from '@/components/ImageUploader'
 import { IconArrowLeft, IconDeviceFloppy } from '@tabler/icons-react'
 
 export default function EditArtikelPage() {
@@ -16,6 +17,7 @@ export default function EditArtikelPage() {
   const [category, setCategory] = useState('')
   const [author, setAuthor] = useState('')
   const [content, setContent] = useState('')
+  const [cover, setCover] = useState('')
   const [status, setStatus] = useState('draft')
   const [saving, setSaving] = useState(false)
   const [loading, setLoading] = useState(true)
@@ -26,6 +28,7 @@ export default function EditArtikelPage() {
         setTitle(data.title || '')
         setExcerpt(data.excerpt || '')
         setContent(data.content || '')
+        setCover(data.cover || '')
         setCategory(data.category?.name || data.category || '')
         setAuthor(data.author?.name || data.authorName || '')
         setStatus(data.status || 'draft')
@@ -42,6 +45,7 @@ export default function EditArtikelPage() {
         title: title.trim(),
         excerpt: excerpt.trim(),
         content,
+        cover,
         category,
         authorName: author.trim(),
         status: newStatus,
@@ -85,6 +89,10 @@ export default function EditArtikelPage() {
           <TiptapEditor content={content} onChange={setContent} />
         </div>
         <div className="space-y-5">
+          <div className="bg-white rounded-xl border border-gray-200 p-5 space-y-4">
+            <h3 className="font-semibold text-sm text-gray-800">Foto Sampul</h3>
+            <ImageUploader value={cover} onChange={setCover} label="Foto artikel" />
+          </div>
           <div className="bg-white rounded-xl border border-gray-200 p-5 space-y-4">
             <h3 className="font-semibold text-sm text-gray-800">Pengaturan</h3>
             <div>
