@@ -84,6 +84,12 @@ function Header() {
     }
   }
 
+  const handleLogout = () => {
+    localStorage.removeItem('member_token')
+    setMember(null)
+    router.push('/')
+  }
+
   return (
     <header className="bg-[#1B2A4A] sticky top-0 z-50">
       <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex h-16 items-center justify-between gap-4">
@@ -239,14 +245,42 @@ function Header() {
 
           {/* Login / member */}
           {member ? (
-            <a
-              href="/premium"
-              className="hidden sm:inline-flex items-center gap-1.5 text-xs font-medium text-[#8490B1] hover:text-[#C9A84C] transition-colors"
-            >
-              <span className="w-7 h-7 rounded-full bg-[#16223B] flex items-center justify-center text-[#C9A84C]">
-                <IconUser size={14} />
-              </span>
-            </a>
+            <div className="relative group">
+              <button className="hidden sm:flex items-center gap-2 text-xs font-medium text-[#8490B1] hover:text-[#C9A84C] transition-colors">
+                <span className="w-7 h-7 rounded-full bg-[#16223B] flex items-center justify-center text-[#C9A84C]">
+                  <IconUser size={14} />
+                </span>
+                <span className="max-w-[80px] truncate">{member.name}</span>
+              </button>
+              {/* Member dropdown */}
+              <div className="absolute right-0 top-full pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                <div className="bg-white rounded-xl shadow-xl border border-gray-100 w-48 overflow-hidden">
+                  <div className="px-4 py-3 border-b border-gray-100">
+                    <p className="text-sm font-semibold text-gray-900 truncate">{member.name}</p>
+                    <p className="text-xs text-gray-500 truncate">{member.email}</p>
+                    <span
+                      className={`inline-block mt-2 text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                        isPremiumMember ? 'text-[#B8973A] bg-[#C9A84C]/15' : 'text-gray-500 bg-gray-100'
+                      }`}
+                    >
+                      {isPremiumMember ? 'PREMIUM' : 'FREE'}
+                    </span>
+                  </div>
+                  <a
+                    href="/premium"
+                    className="block px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 transition-colors"
+                  >
+                    Kelola Premium
+                  </a>
+                  <button
+                    onClick={handleLogout}
+                    className="w-full text-left px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors"
+                  >
+                    Logout
+                  </button>
+                </div>
+              </div>
+            </div>
           ) : (
             <a
               href="/login"
