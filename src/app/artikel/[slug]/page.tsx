@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { fetchArticleBySlug, fetchPublishedArticles } from '@/lib/server-api'
 import { mapArticle } from '@/lib/api'
-import ArticleContent from './ArticleContent'
+import ArticlePremiumGate from '@/components/ArticlePremiumGate'
 import ShareButtons from '@/components/ShareButtons'
 
 interface Props {
@@ -109,7 +109,11 @@ export default async function ArticleDetailPage({ params }: Props) {
             </div>
           )}
 
-          <ArticleContent content={article.content} />
+          <ArticlePremiumGate
+            slug={article.slug}
+            initialContent={article.content}
+            premium={article.premium}
+          />
 
           {article.sources.length > 0 && (
             <div className="mt-10 bg-bg-alt rounded-xl p-6">

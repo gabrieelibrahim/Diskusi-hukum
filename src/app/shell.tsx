@@ -1,8 +1,8 @@
 'use client'
 
 import { usePathname, useRouter } from 'next/navigation'
-import { ReactNode, useState, FormEvent } from 'react'
-import { articles } from '@/data/articles'
+import { ReactNode, useState, useEffect, FormEvent } from 'react'
+import { mapArticle } from '@/lib/api'
 import { events } from '@/data/content'
 import {
   IconInfoCircle,
@@ -22,6 +22,8 @@ import {
   IconBrandInstagram,
   IconBrandTiktok,
   IconBrandWhatsapp,
+  IconCrown,
+  IconUser,
 } from '@tabler/icons-react'
 
 export default function Shell({ children }: { children: ReactNode }) {
@@ -45,6 +47,33 @@ function Header() {
   const [query, setQuery] = useState('')
   const router = useRouter()
   const [showSearch, setShowSearch] = useState(false)
+  const [member, setMember] = useState<any | null>(null)
+  const [featuredArticle, setFeaturedArticle] = useState<any | null>(null)
+
+  // Fetch most popular article for the Artikel dropdown featured card
+  useEffect(() => {
+    fetch('/api/articles?status=published&sort=popular&limit=1')
+      .then((res) => res.json())
+      .then((json) => {
+        const data = (json.data || [])[0]
+        if (data) setFeaturedArticle(mapArticle(data))
+      })
+      .catch(() => {})
+  }, [])
+
+  // Fetch member session from localStorage token
+  useEffect(() => {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('member_token') : null
+    if (!token) return
+    fetch('/api/auth/user/me', { headers: { Authorization: `Bearer ${token}` } })
+      .then((r) => r.json())
+      .then((json) => {
+        if (json.data) setMember(json.data)
+      })
+      .catch(() => {})
+  }, [])
+
+  const isPremiumMember = member?.subscriptionStatus === 'premium'
 
   const handleSearch = (e: FormEvent) => {
     e.preventDefault()
@@ -59,7 +88,7 @@ function Header() {
     <header className="bg-[#1B2A4A] sticky top-0 z-50">
       <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex h-16 items-center justify-between gap-4">
         <a href="/" className="flex items-center gap-2 shrink-0">
-          <img src="/images/logo.png" alt="Diskusi Hukum" className="h-10 w-auto" />
+          <img src="/images/logo.webp" alt="Diskusi Hukum" className="h-10 w-auto" />
           <span className="font-heading text-xl font-bold" style={{ color: '#C9A84C' }}>Diskusi Hukum</span>
         </a>
 
@@ -96,14 +125,24 @@ function Header() {
                 {/* Featured Article */}
                 <div className="w-[300px] border-l border-gray-100 pl-10">
                   <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-5">Featured</h4>
-                  <a href={`/artikel/${articles[0].slug}`} className="group/featured block">
-                    <div className="h-40 bg-gray-100 rounded-xl mb-4 overflow-hidden">
-                       <img src={articles[0].cover || '/images/hero.png'} className="w-full h-full object-cover group-hover/featured:scale-105 transition-transform duration-500" alt={articles[0].title} />
-                    </div>
-                    <h5 className="font-semibold text-gray-900 leading-snug group-hover/featured:text-[#C9A84C] transition-colors">{articles[0].title}</h5>
-                    <p className="text-sm text-gray-500 mt-2 line-clamp-2">{articles[0].excerpt}</p>
-                    <p className="text-xs text-gray-400 mt-3">{articles[0].readingTime} min read</p>
-                  </a>
+                  {featuredArticle ? (
+                    <a href={`/artikel/${featuredArticle.slug}`} className="group/featured block">
+                      <div className="h-40 bg-[#F5F6FA] rounded-xl mb-4 overflow-hidden flex items-center justify-center">
+                        {featuredArticle.cover && featuredArticle.cover.length > 0 ? (
+                          <img src={featuredArticle.cover} alt={featuredArticle.title} className="w-full h-full object-cover group-hover/featured:scale-105 transition-transform duration-500" />
+                        ) : (
+                          <svg className="w-10 h-10 text-[#C9A84C]/60" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                          </svg>
+                        )}
+                      </div>
+                      <h5 className="font-semibold text-gray-900 leading-snug group-hover/featured:text-[#C9A84C] transition-colors">{featuredArticle.title}</h5>
+                      <p className="text-sm text-gray-500 mt-2 line-clamp-2">{featuredArticle.excerpt}</p>
+                      <p className="text-xs text-gray-400 mt-3">{featuredArticle.readingTime} min read</p>
+                    </a>
+                  ) : (
+                    <div className="h-40 bg-gray-100 rounded-xl animate-pulse" />
+                  )}
                 </div>
               </div>
             </div>
@@ -185,6 +224,37 @@ function Header() {
             </svg>
           </button>
 
+          {/* Premium button */}
+          <a
+            href="/premium"
+            className={`hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold px-4 py-2 rounded-lg transition-colors ${
+              isPremiumMember
+                ? 'text-[#1B2A4A] bg-[#C9A84C]'
+                : 'text-[#C9A84C] bg-[#C9A84C]/15 hover:bg-[#C9A84C]/25'
+            }`}
+          >
+            <IconCrown size={15} />
+            {isPremiumMember ? 'Premium' : 'Premium'}
+          </a>
+
+          {/* Login / member */}
+          {member ? (
+            <a
+              href="/premium"
+              className="hidden sm:inline-flex items-center gap-1.5 text-xs font-medium text-[#8490B1] hover:text-[#C9A84C] transition-colors"
+            >
+              <span className="w-7 h-7 rounded-full bg-[#16223B] flex items-center justify-center text-[#C9A84C]">
+                <IconUser size={14} />
+              </span>
+            </a>
+          ) : (
+            <a
+              href="/login"
+              className="hidden sm:inline-flex items-center gap-1.5 text-xs font-medium text-[#8490B1] hover:text-[#C9A84C] transition-colors"
+            >
+              Masuk
+            </a>
+          )}
                   </div>
       </nav>
 
@@ -211,7 +281,7 @@ function Footer() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
           <div className="md:col-span-1">
-            <img src="/images/logo.png" alt="Diskusi Hukum" className="h-12 w-auto mb-4" />
+            <img src="/images/logo.webp" alt="Diskusi Hukum" className="h-12 w-auto mb-4" />
             <p className="text-sm text-[#8490B1] leading-relaxed">
               Komunitas belajar hukum Indonesia. Memahami hukum dengan bahasa yang jelas dan aplikatif.
             </p>

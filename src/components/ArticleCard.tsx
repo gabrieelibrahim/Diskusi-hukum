@@ -33,6 +33,12 @@ export default function ArticleCard({ article }: ArticleCardProps) {
               </svg>
             </div>
           )}
+          {/* Premium badge */}
+          {article.premium && (
+            <span className="absolute top-3 right-3 inline-flex items-center gap-1 text-[10px] font-bold text-[#1B2A4A] bg-[#C9A84C] px-2 py-1 rounded-full shadow-sm">
+              PREMIUM
+            </span>
+          )}
         </div>
 
         {/* Content */}

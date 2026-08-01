@@ -17,6 +17,7 @@ import {
   IconX,
   IconLogout,
   IconChevronRight,
+  IconCrown,
 } from '@tabler/icons-react'
 
 const navItems = [
@@ -25,6 +26,7 @@ const navItems = [
   { href: '/admin/review', label: 'Review', icon: IconClipboardCheck },
   { href: '/admin/taksonomi', label: 'Taksonomi', icon: IconTags },
   { href: '/admin/kontributor', label: 'Kontributor', icon: IconUsers },
+  { href: '/admin/member', label: 'Member', icon: IconCrown },
   { href: '/admin/usulan-topik', label: 'Usulan Topik', icon: IconBulb },
   { href: '/admin/agenda', label: 'Agenda', icon: IconCalendarEvent },
   { href: '/admin/media', label: 'Media', icon: IconPhoto },

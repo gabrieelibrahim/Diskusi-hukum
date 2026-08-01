@@ -16,6 +16,8 @@ export interface Article {
   glossary: { term: string; definition: string }[]
   keyPoints: string[]
   disclaimer?: string
+  premium?: boolean
+  premiumAccess?: boolean
 }
 
 export interface Category {

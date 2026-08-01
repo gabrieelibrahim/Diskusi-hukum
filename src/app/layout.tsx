@@ -9,9 +9,9 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       { url: '/favicon.ico', type: 'image/x-icon' },
-      { url: '/images/logo.png', type: 'image/png' },
+      { url: '/images/logo.webp', type: 'image/webp' },
     ],
-    apple: '/images/logo.png',
+    apple: '/images/logo.webp',
   },
   openGraph: {
     title: 'Diskusi Hukum - Komunitas Belajar Hukum Indonesia',

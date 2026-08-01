@@ -48,7 +48,7 @@ export default function HomePage() {
             {/* Image with badge at bottom center */}
             <div className="shrink-0 relative flex flex-col items-center -mt-6">
               <img
-                src="/images/kevin.png"
+                src="/images/kevin.webp"
                 alt="Kevin Wong, S.H."
                 className="w-[280px] sm:w-[320px] lg:w-[380px] h-auto rounded-2xl"
               />
@@ -112,7 +112,7 @@ export default function HomePage() {
             </div>
             <div className="flex justify-end">
               <img
-                src="/images/hero.png"
+                src="/images/hero.webp"
                 alt="Ilustrasi Hukum"
                 className="w-full max-w-lg h-auto"
               />

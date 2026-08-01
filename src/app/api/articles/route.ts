@@ -3,6 +3,7 @@ import { db } from '@/db'
 import { articles, categories, tags, articleTags } from '@/db/schema'
 import { eq, like, or, desc, and, sql } from 'drizzle-orm'
 import { verifyAuth } from '@/middleware/auth'
+import { resolveAccess, previewContent } from '@/lib/premium'
 
 // Slug-ify helper
 function slugify(text: string): string {
@@ -94,6 +95,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Attach tags to each article
+    const access = await resolveAccess(request)
     const articlesWithTags = await Promise.all(
       result.map(async (article) => {
         const atRows = await db
@@ -102,8 +104,13 @@ export async function GET(request: NextRequest) {
           .innerJoin(tags, eq(articleTags.tagId, tags.id))
           .where(eq(articleTags.articleId, article.id))
 
+        // Non-premium callers get a preview instead of the full body in list responses
+        const content = access.canViewFull ? article.content : previewContent(article.content ?? '')
+
         return {
           ...article,
+          content,
+          premium: !access.canViewFull,
           category: catMap.get(article.categorySlug ?? '') ?? null,
           tags: atRows.map((r) => r.tag),
         }

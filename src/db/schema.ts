@@ -110,6 +110,20 @@ export const adminUsers = sqliteTable('admin_users', {
   createdAt: text('created_at'),
 })
 
+// ─── Regular Users (public members) ────────────────────────
+export const users = sqliteTable('users', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  name: text('name').notNull(),
+  email: text('email').notNull().unique(),
+  passwordHash: text('password_hash').notNull(),
+  // free | premium | expired
+  subscriptionStatus: text('subscription_status').default('free'),
+  // ISO date when the current premium period ends (null if not premium)
+  subscriptionExpiresAt: text('subscription_expires_at'),
+  createdAt: text('created_at'),
+  updatedAt: text('updated_at'),
+})
+
 // ─── Inferred Types ────────────────────────────────────────
 export type Category = InferSelectModel<typeof categories>
 export type NewCategory = InferInsertModel<typeof categories>
@@ -140,3 +154,6 @@ export type NewSetting = InferInsertModel<typeof settings>
 
 export type AdminUser = InferSelectModel<typeof adminUsers>
 export type NewAdminUser = InferInsertModel<typeof adminUsers>
+
+export type User = InferSelectModel<typeof users>
+export type NewUser = InferInsertModel<typeof users>

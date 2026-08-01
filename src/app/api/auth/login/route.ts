@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Username atau password salah' }, { status: 401 })
     }
 
-    const token = signToken({ username: user.username })
+    const token = signToken({ username: user.username, role: 'admin' })
 
     return NextResponse.json({
       token,
