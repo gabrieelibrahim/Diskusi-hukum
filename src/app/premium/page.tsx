@@ -160,9 +160,12 @@ export default function PremiumPage() {
             href={
               member
                 ? `https://wa.me/6285802042005?text=${encodeURIComponent(
-                    `Halo, saya ingin berlangganan premium Diskusi Hukum. Email saya: ${member.email}`,
+                    `Halo Admin 👋\n\nSaya ingin berlangganan Premium Diskusi Hukum.\n\nEmail akun saya: ${member.email}\n\nMohon informasi proses pembayarannya.`,
                   )}`
-                : 'https://wa.me/6285802042005?text=Halo, saya ingin berlangganan premium Diskusi Hukum 25k/bulan.'
+                : 'https://wa.me/6285802042005?text=' +
+                  encodeURIComponent(
+                    'Halo Admin 👋\n\nSaya ingin berlangganan Premium Diskusi Hukum (Rp25.000/bulan).\n\nMohon informasi cara daftar dan pembayarannya.\n\nTerima kasih.',
+                  )
             }
             target="_blank"
             rel="noopener noreferrer"

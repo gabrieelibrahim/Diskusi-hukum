@@ -89,7 +89,7 @@ export default function KonsultasiPage() {
           Klik tombol di bawah untuk memulai konsultasi via WhatsApp.
         </p>
         <a
-          href="https://wa.me/6285802042005?text=Halo%20saya%20tertarik%20konsultasi%20hukum%2035k"
+          href="https://wa.me/6285802042005?text=Halo%20Admin%20%F0%9F%91%8B%0A%0ASaya%20tertarik%20menggunakan%20layanan%20Konsultasi%20Hukum%20%28Rp35.000%29.%0A%0AMohon%20informasi%20mengenai%20langkah%20selanjutnya.%0A%0ATerima%20kasih."
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 text-white font-semibold px-8 py-3 rounded-xl transition-all duration-200 hover:brightness-110"
