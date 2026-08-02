@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { IconCrown, IconCheck, IconCoin, IconMessages, IconShield, IconArrowRight, IconUser } from '@tabler/icons-react'
 
-const PRICE = '15K'
+const PRICE = '25K'
 
 export default function PremiumPage() {
   const router = useRouter()
@@ -125,8 +125,8 @@ export default function PremiumPage() {
           <div className="w-12 h-12 rounded-xl bg-[#F5F6FA] flex items-center justify-center mx-auto mb-4">
             <IconCoin size={24} className="text-[#C9A84C]" />
           </div>
-          <h3 className="font-semibold text-gray-800 mb-2">2. Transfer 15K</h3>
-          <p className="text-sm text-gray-500">Transfer Rp15.000 ke rekening yang dikirimkan.</p>
+          <h3 className="font-semibold text-gray-800 mb-2">2. Transfer 25K</h3>
+          <p className="text-sm text-gray-500">Transfer Rp25.000 ke rekening yang dikirimkan.</p>
         </div>
         <div className="bg-white rounded-xl border border-gray-200 p-6 text-center">
           <div className="w-12 h-12 rounded-xl bg-[#F5F6FA] flex items-center justify-center mx-auto mb-4">
@@ -162,7 +162,7 @@ export default function PremiumPage() {
                 ? `https://wa.me/6285802042005?text=${encodeURIComponent(
                     `Halo, saya ingin berlangganan premium Diskusi Hukum. Email saya: ${member.email}`,
                   )}`
-                : 'https://wa.me/6285802042005?text=Halo, saya ingin berlangganan premium Diskusi Hukum 15k/bulan.'
+                : 'https://wa.me/6285802042005?text=Halo, saya ingin berlangganan premium Diskusi Hukum 25k/bulan.'
             }
             target="_blank"
             rel="noopener noreferrer"

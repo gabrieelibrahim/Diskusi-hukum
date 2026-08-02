@@ -50,7 +50,7 @@ export default function Paywall({ isLoggedIn, onShowLogin }: PaywallProps) {
       <div className="flex items-center justify-center gap-4 mt-6 text-[11px] text-[#8490B1]">
         <span className="flex items-center gap-1.5">
           <IconCheck size={13} className="text-[#C9A84C]" />
-          Rp15.000 / bulan
+          Rp25.000 / bulan
         </span>
         <span className="flex items-center gap-1.5">
           <IconCheck size={13} className="text-[#C9A84C]" />

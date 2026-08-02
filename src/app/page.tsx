@@ -5,6 +5,7 @@ import ArticleCard from '@/components/ArticleCard'
 import FadeInView from '@/components/FadeInView'
 import ArticleCarousel from '@/components/ArticleCarousel'
 import { mapArticle } from '@/lib/api'
+import { IconMessages, IconCheck, IconArrowRight } from '@tabler/icons-react'
 
 export default function HomePage() {
   const [articles, setArticles] = useState<any[]>([])
@@ -120,6 +121,80 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Konsultasi Highlight */}
+      <FadeInView>
+      <section className="py-16 md:py-20" style={{ backgroundColor: '#1B2A4A' }}>
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+            {/* Left: copy */}
+            <div>
+              <div className="w-14 h-14 bg-[#C9A84C]/15 rounded-2xl flex items-center justify-center mb-6">
+                <IconMessages size={28} className="text-[#C9A84C]" />
+              </div>
+              <h2 className="font-heading text-2xl md:text-3xl font-bold text-white mb-4">
+                Konsultasi Hukum Privat
+              </h2>
+              <p className="text-[#8490B1] leading-relaxed mb-8 max-w-lg">
+                Butuh jawaban atas masalah hukum Anda? Konsultasikan secara privat dengan praktisi hukum
+                berpengalaman. Cukup melalui WhatsApp, langsung dapat arahan yang jelas.
+              </p>
+              <ul className="space-y-3 mb-8">
+                {[
+                  'Diskusi langsung & privat via WhatsApp',
+                  '1x sesi untuk satu masalah hukum spesifik',
+                  'Arahan hukum yang jelas dan aplikatif',
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-3 text-[#D6DCEA] text-sm">
+                    <IconCheck size={18} className="text-[#C9A84C] mt-0.5 shrink-0" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <a
+                href="/konsultasi"
+                className="inline-flex items-center gap-2 text-white font-semibold px-7 py-3 rounded-xl transition-all duration-200 hover:brightness-110"
+                style={{ backgroundColor: '#C9A84C' }}
+              >
+                Lihat Layanan Konsultasi
+                <IconArrowRight size={18} />
+              </a>
+            </div>
+
+            {/* Right: price card */}
+            <div className="bg-white rounded-2xl overflow-hidden shadow-xl max-w-md w-full lg:justify-self-end">
+              <div className="p-8 md:p-10 text-center" style={{ backgroundColor: '#16223B' }}>
+                <p className="text-sm font-medium uppercase tracking-widest mb-2" style={{ color: '#C9A84C' }}>Mulai dari</p>
+                <p className="font-display font-bold text-5xl md:text-6xl text-white mb-2">35K</p>
+                <p className="text-sm" style={{ color: '#8490B1' }}>per sesi konsultasi</p>
+              </div>
+              <div className="p-7 md:p-8 space-y-4">
+                {[
+                  'Konsultasi Via WhatsApp',
+                  'Sesi privat bersama praktisi',
+                  'Tanpa ribet, langsung jelas',
+                ].map((item) => (
+                  <div key={item} className="flex items-start gap-3">
+                    <IconCheck size={18} className="text-green-500 mt-0.5 shrink-0" />
+                    <p className="text-sm text-gray-600">{item}</p>
+                  </div>
+                ))}
+                <a
+                  href="https://wa.me/6285802042005?text=Halo%20saya%20tertarik%20konsultasi%20hukum%2035k"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 w-full text-white font-semibold px-5 py-3 rounded-xl mt-4 transition-all duration-200 hover:brightness-110"
+                  style={{ backgroundColor: '#C9A84C' }}
+                >
+                  Mulai Konsultasi
+                  <IconArrowRight size={18} />
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      </FadeInView>
 
       {/* Featured Articles — carousel with nav buttons */}
       <FadeInView>

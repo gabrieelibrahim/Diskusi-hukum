@@ -165,7 +165,7 @@ export default function AdminMemberPage() {
 
       {/* Note about manual activation */}
       <div className="bg-[#C9A84C]/5 border border-[#C9A84C]/20 rounded-xl p-4 text-sm text-gray-600">
-        <strong className="text-[#1B2A4A]">Alur aktivasi premium:</strong> Member transfer Rp15.000 lalu kirim bukti via WhatsApp.
+        <strong className="text-[#1B2A4A]">Alur aktivasi premium:</strong> Member transfer Rp25.000 lalu kirim bukti via WhatsApp.
         Setelah dicek, klik <strong>“Aktifkan Premium”</strong> di sini. Status premium otomatis berlaku 1 bulan.
       </div>
     </div>
