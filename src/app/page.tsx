@@ -203,11 +203,18 @@ export default function HomePage() {
               ))}
             </div>
           ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {recentArticles.slice(0, 6).map((article) => (
-              <ArticleCard key={article.id} article={article} />
-            ))}
-          </div>
+          <>
+            {/* Mobile: slider carousel */}
+            <div className="md:hidden">
+              <ArticleCarousel articles={recentArticles.slice(0, 10)} />
+            </div>
+            {/* Desktop: grid */}
+            <div className="hidden md:grid grid-cols-2 lg:grid-cols-3 gap-6">
+              {recentArticles.slice(0, 6).map((article) => (
+                <ArticleCard key={article.id} article={article} />
+              ))}
+            </div>
+          </>
           )}
         </div>
       </section>

@@ -24,6 +24,8 @@ import {
   IconBrandWhatsapp,
   IconCrown,
   IconUser,
+  IconMenu2,
+  IconX,
 } from '@tabler/icons-react'
 
 export default function Shell({ children }: { children: ReactNode }) {
@@ -47,6 +49,7 @@ function Header() {
   const [query, setQuery] = useState('')
   const router = useRouter()
   const [showSearch, setShowSearch] = useState(false)
+  const [showMobileMenu, setShowMobileMenu] = useState(false)
   const [member, setMember] = useState<any | null>(null)
   const [featuredArticle, setFeaturedArticle] = useState<any | null>(null)
 
@@ -219,6 +222,15 @@ function Header() {
             </svg>
           </form>
 
+          {/* Mobile menu toggle */}
+          <button
+            className="md:hidden text-[#C9A84C]"
+            onClick={() => setShowMobileMenu(true)}
+            aria-label="Buka menu"
+          >
+            <IconMenu2 size={24} />
+          </button>
+
           {/* Mobile search toggle */}
           <button
             className="md:hidden text-[#C9A84C]"
@@ -304,6 +316,89 @@ function Header() {
             autoFocus
           />
         </form>
+      )}
+
+      {/* Mobile menu drawer */}
+      {showMobileMenu && (
+        <div className="md:hidden fixed inset-0 z-[60]">
+          <div className="absolute inset-0 bg-black/50" onClick={() => setShowMobileMenu(false)} />
+          <div className="absolute left-0 top-0 h-full w-[300px] bg-[#1B2A4A] shadow-xl flex flex-col">
+            <div className="flex items-center justify-between px-5 h-16 border-b border-white/10">
+              <span className="font-heading text-lg font-bold" style={{ color: '#C9A84C' }}>Menu</span>
+              <button onClick={() => setShowMobileMenu(false)} className="text-[#8490B1] hover:text-white transition-colors" aria-label="Tutup menu">
+                <IconX size={22} />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto px-5 py-5 space-y-6">
+              {/* Main nav */}
+              <nav className="space-y-1">
+                <a href="/" onClick={() => setShowMobileMenu(false)} className="block py-2.5 text-[#8490B1] hover:text-[#C9A84C] font-medium transition-colors">
+                  Beranda
+                </a>
+                <div className="pt-2">
+                  <p className="text-xs font-bold text-[#C9A84C] uppercase tracking-wider mb-1.5">Artikel</p>
+                  {[
+                    { href: '/artikel', label: 'Artikel Terbaru' },
+                    { href: '/artikel?sort=popular', label: 'Artikel Populer' },
+                    { href: '/artikel?sort=editors-pick', label: "Editor's Pick" },
+                    { href: '/artikel', label: 'Semua Artikel' },
+                  ].map((item) => (
+                    <a key={item.label} href={item.href} onClick={() => setShowMobileMenu(false)} className="block py-2 text-[#8490B1] hover:text-[#C9A84C] transition-colors text-sm">
+                      {item.label}
+                    </a>
+                  ))}
+                </div>
+                <div className="pt-2">
+                  <p className="text-xs font-bold text-[#C9A84C] uppercase tracking-wider mb-1.5">Komunitas</p>
+                  {[
+                    { href: '/tentang', label: 'Tentang Komunitas' },
+                    { href: '/kontributor', label: 'Kontributor' },
+                    { href: '/agenda', label: 'Agenda Diskusi' },
+                    { href: '/kontributor/daftar', label: 'Bergabung' },
+                  ].map((item) => (
+                    <a key={item.href} href={item.href} onClick={() => setShowMobileMenu(false)} className="block py-2 text-[#8490B1] hover:text-[#C9A84C] transition-colors text-sm">
+                      {item.label}
+                    </a>
+                  ))}
+                </div>
+                <a href="/konsultasi" onClick={() => setShowMobileMenu(false)} className="block py-2.5 text-[#8490B1] hover:text-[#C9A84C] font-medium transition-colors">
+                  Konsultasi
+                </a>
+              </nav>
+
+              {/* Auth actions */}
+              <div className="pt-4 border-t border-white/10 space-y-3">
+                {member ? (
+                  <>
+                    <div className="flex items-center gap-2 text-sm text-[#8490B1]">
+                      <span className="w-7 h-7 rounded-full bg-[#16223B] flex items-center justify-center text-[#C9A84C]">
+                        <IconUser size={14} />
+                      </span>
+                      <span className="truncate">{member.name}</span>
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${isPremiumMember ? 'text-[#B8973A] bg-[#C9A84C]/15' : 'text-gray-400 bg-white/10'}`}>
+                        {isPremiumMember ? 'PREMIUM' : 'FREE'}
+                      </span>
+                    </div>
+                    <a href="/premium" onClick={() => setShowMobileMenu(false)} className="block text-[#8490B1] hover:text-[#C9A84C] text-sm transition-colors">
+                      Kelola Premium
+                    </a>
+                    <button
+                      onClick={() => { setShowMobileMenu(false); handleLogout() }}
+                      className="text-red-400 text-sm hover:text-red-300 transition-colors"
+                    >
+                      Logout
+                    </button>
+                  </>
+                ) : (
+                  <a href="/login" onClick={() => setShowMobileMenu(false)} className="block text-sm font-medium text-[#C9A84C]">
+                    Masuk
+                  </a>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </header>
   )
