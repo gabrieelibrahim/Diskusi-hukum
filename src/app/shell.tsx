@@ -76,6 +76,17 @@ function Header() {
       .catch(() => {})
   }, [])
 
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (showMobileMenu) {
+      const original = document.body.style.overflow
+      document.body.style.overflow = 'hidden'
+      return () => {
+        document.body.style.overflow = original
+      }
+    }
+  }, [showMobileMenu])
+
   const isPremiumMember = member?.subscriptionStatus === 'premium'
 
   const handleSearch = (e: FormEvent) => {
