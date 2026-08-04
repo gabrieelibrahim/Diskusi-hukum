@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { apiPost } from '@/lib/api'
-import TiptapEditor from '@/components/TiptapEditor'
+import EditorWithImport from '@/components/EditorWithImport'
 import ImageUploader from '@/components/ImageUploader'
 import { IconArrowLeft, IconDeviceFloppy } from '@tabler/icons-react'
 
@@ -93,7 +93,7 @@ export default function TulisArtikelPage() {
           />
 
           {/* Editor */}
-          <TiptapEditor content={content} onChange={setContent} />
+          <EditorWithImport content={content} onChange={setContent} />
         </div>
 
         {/* Sidebar */}

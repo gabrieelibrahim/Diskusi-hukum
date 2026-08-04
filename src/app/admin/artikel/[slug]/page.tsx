@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { apiGet, apiPut } from '@/lib/api'
-import TiptapEditor from '@/components/TiptapEditor'
+import EditorWithImport from '@/components/EditorWithImport'
 import ImageUploader from '@/components/ImageUploader'
 import { IconArrowLeft, IconDeviceFloppy } from '@tabler/icons-react'
 
@@ -86,7 +86,7 @@ export default function EditArtikelPage() {
             className="w-full border border-gray-200 rounded-xl px-5 py-4 text-xl font-heading font-semibold focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/20 focus:border-[#C9A84C]" />
           <textarea value={excerpt} onChange={(e) => setExcerpt(e.target.value)} placeholder="Ringkasan singkat"
             rows={3} className="w-full border border-gray-200 rounded-xl px-5 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/20 focus:border-[#C9A84C] resize-none" />
-          <TiptapEditor content={content} onChange={setContent} />
+          <EditorWithImport content={content} onChange={setContent} />
         </div>
         <div className="space-y-5">
           <div className="bg-white rounded-xl border border-gray-200 p-5 space-y-4">

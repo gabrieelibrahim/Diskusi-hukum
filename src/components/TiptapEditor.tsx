@@ -5,7 +5,7 @@ import StarterKit from '@tiptap/starter-kit'
 import LinkExtension from '@tiptap/extension-link'
 import ImageExtension from '@tiptap/extension-image'
 import Placeholder from '@tiptap/extension-placeholder'
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import {
   IconBold,
   IconItalic,
@@ -39,6 +39,12 @@ export default function TiptapEditor({ content, onChange }: Props) {
   })
   const [uploading, setUploading] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  // Sync external content (e.g. result of a document import) into the editor
+  useEffect(() => {
+    if (!editor || !content || content === editor.getHTML()) return
+    editor.commands.setContent(content, { emitUpdate: false })
+  }, [content, editor])
 
   if (!editor) return null
 
