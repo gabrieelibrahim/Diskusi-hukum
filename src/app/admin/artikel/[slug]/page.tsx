@@ -5,6 +5,7 @@ import { useRouter, useParams } from 'next/navigation'
 import { apiGet, apiPut } from '@/lib/api'
 import EditorWithImport from '@/components/EditorWithImport'
 import ImageUploader from '@/components/ImageUploader'
+import CategorySelect from '@/components/CategorySelect'
 import { IconArrowLeft, IconDeviceFloppy } from '@tabler/icons-react'
 
 export default function EditArtikelPage() {
@@ -29,7 +30,8 @@ export default function EditArtikelPage() {
         setExcerpt(data.excerpt || '')
         setContent(data.content || '')
         setCover(data.cover || '')
-        setCategory(data.category?.name || data.category || '')
+        // CategorySelect expects a slug; the API returns the category as an object
+        setCategory(data.category?.slug || data.category || '')
         setAuthor(data.author?.name || data.authorName || '')
         setStatus(data.status || 'draft')
       })
@@ -46,7 +48,7 @@ export default function EditArtikelPage() {
         excerpt: excerpt.trim(),
         content,
         cover,
-        category,
+        categorySlug: category,
         authorName: author.trim(),
         status: newStatus,
       })
@@ -101,7 +103,7 @@ export default function EditArtikelPage() {
             </div>
             <div>
               <label className="block text-xs font-medium text-gray-600 mb-1">Kategori</label>
-              <input value={category} onChange={(e) => setCategory(e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none" />
+              <CategorySelect value={category} onChange={setCategory} />
             </div>
           </div>
         </div>

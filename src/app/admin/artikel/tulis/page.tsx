@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { apiPost } from '@/lib/api'
 import EditorWithImport from '@/components/EditorWithImport'
 import ImageUploader from '@/components/ImageUploader'
+import CategorySelect from '@/components/CategorySelect'
 import { IconArrowLeft, IconDeviceFloppy } from '@tabler/icons-react'
 
 export default function TulisArtikelPage() {
@@ -29,7 +30,7 @@ export default function TulisArtikelPage() {
         title: title.trim(),
         excerpt: excerpt.trim(),
         content,
-        category,
+        categorySlug: category,
         cover,
         authorName: author.trim(),
         tags: tags.split(',').map(t => t.trim()).filter(Boolean),
@@ -111,7 +112,7 @@ export default function TulisArtikelPage() {
             </div>
             <div>
               <label className="block text-xs font-medium text-gray-600 mb-1">Kategori</label>
-              <input value={category} onChange={(e) => setCategory(e.target.value)} placeholder="Nama kategori" className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/20" />
+              <CategorySelect value={category} onChange={setCategory} />
             </div>
             <div>
               <label className="block text-xs font-medium text-gray-600 mb-1">Tag (pisahkan dengan koma)</label>
