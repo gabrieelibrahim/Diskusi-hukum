@@ -1,0 +1,144 @@
+[
+  {
+    "id": "T01",
+    "title": "Artikel bisa dibaca penuh tanpa paywall",
+    "description": "Buka halaman artikel detail. Pastikan seluruh isi artikel terlihat utuh tanpa ada paywall/premium gate, tanpa tombol langganan premium, tanpa banner betapa pun status login pengguna.",
+    "priority": "High",
+    "url": "/artikel",
+    "steps": [
+      "Buka halaman daftar artikel di /artikel",
+      "Klik artikel pertama yang tampil",
+      "Scroll ke bawah seluruh halaman artikel",
+      "Verifikasi tidak ada paywall ataupun tombol langganan premium",
+      "Verifikasi seluruh isi artikel terlihat lengkap"
+    ]
+  },
+  {
+    "id": "T02",
+    "title": "Header tidak menampilkan tombol Premium",
+    "description": "Buka beranda. Di navigasi header pastikan tidak ada tombol Premium / Logo Mahkota. Menu yang ada: Beranda, Artikel, Komunitas, Konsultasi, pencarian, dan status login member saja.",
+    "priority": "High",
+    "url": "/",
+    "steps": [
+      "Buka halaman beranda /",
+      "Amati baris navigasi header",
+      "Pastikan tidak ada tombol atau teks Premium",
+      "Pastikan menu Beranda, Artikel, Komunitas, Konsultasi masih ada",
+      "Pastikan ikon pencarian dan tombol Masuk masih tampil"
+    ]
+  },
+  {
+    "id": "T03",
+    "title": "Halaman /premium tidak lagi tersedia",
+    "description": "Kunjungi langsung URL /premium. Pastikan pengunjung tidak menemukan halaman langganan premium (halaman 404/not found atau redirect ke beranda). Tidak ada konten premium.",
+    "priority": "High",
+    "url": "/premium",
+    "steps": [
+      "Kunjungi URL /premium",
+      "Verifikasi halaman tidak menampilkan konten langganan premium",
+      "Verifikasi pengguna tidak melihat harga premium ataupun CTA premium"
+    ]
+  },
+  {
+    "id": "T04",
+    "title": "Daftar artikel tidak menampilkan badge PREMIUM",
+    "description": "Buka halaman /artikel dan beranda (bagian Artikel Pilihan/Artikel Terbaru). Pastikan setiap kartu artikel tidak memiliki badge PREMIUM di sudut foto. Kunjungi salah satu kartu dan baca penuh.",
+    "priority": "High",
+    "url": "/artikel",
+    "steps": [
+      "Buka halaman daftar artikel /artikel",
+      "Periksa seluruh kartu artikel",
+      "Pastikan tidak ada badge/label PREMIUM pada kartu",
+      "Klik salah satu kartu artikel",
+      "Baca isi artikel hingga tuntas tanpa gate"
+    ]
+  },
+  {
+    "id": "T05",
+    "title": "Halaman konsultasi menampilkan harga 50K",
+    "description": "Buka /konsultasi. Harga besar yang ditampilkan adalah 50K (bukan 35K) pada kartu harga, langkah 'Transfer' juga 50K, dan teks meta WhatsApp berisi 50K. Tombol Konsultasi mengarah ke WhatsApp berisi 'Rp50.000'.",
+    "priority": "High",
+    "url": "/konsultasi",
+    "steps": [
+      "Buka halaman /konsultasi",
+      "Verifikasi kartu harga menampilkan angka 50K",
+      "Verifikasi langkah '1. Transfer' menampilkan 50K",
+      "Klik tombol Konsultasi Sekarang",
+      "Verifikasi pesan WhatsApp yang terbuka berisi Rp50.000"
+    ]
+  },
+  {
+    "id": "T06",
+    "title": "Beranda menampilkan harga konsultasi 50K",
+    "description": "Pada halaman beranda, bagian Konsultasi Hukum Privat kartu harga. Pastikan harga yang besar adalah 50K dan tombol 'Mulai Konsultasi' membuka WhatsApp berisi 'Rp50.000'.",
+    "priority": "Medium",
+    "url": "/",
+    "steps": [
+      "Buka halaman beranda /",
+      "Temukan bagian Konsultasi Hukum Privat (kartu harga gelap)",
+      "Verifikasi angka harga besar adalah 50K",
+      "Klik tombol Mulai Konsultasi",
+      "Verifikasi pesan WhatsApp yang terbuka berisi Rp50.000"
+    ]
+  },
+  {
+    "id": "T07",
+    "title": "Login member tetap berfungsi",
+    "description": "Buka /login, pilih tab 'Daftar', isi nama/email/password baru (email format valid), klik Daftar. Pastikan muncul pesan 'Akun berhasil dibuat'. Setelah itu login dengan akun yang sama, pastikan berhasil masuk dan tidak ada badge PREMIUM/FREE di header setelah login.",
+    "priority": "High",
+    "url": "/login",
+    "steps": [
+      "Buka halaman /login",
+      "Klik tab 'Daftar'",
+      "Isi nama lengkap, email baru format valid, dan password minimal 6 karakter",
+      "Klik tombol Daftar",
+      "Tunggu pesan 'Akun berhasil dibuat' muncul",
+      "Login kembali dengan email dan password yang sama",
+      "Verifikasi berhasil masuk ke beranda",
+      "Pastikan menu header tidak menampilkan badge PREMIUM/FREE"
+    ]
+  },
+  {
+    "id": "T08",
+    "title": "Admin dapat melihat daftar member tanpa premium",
+    "description": "Login sebagai admin melalui /admin/login dengan credential admin, buka /admin/member. Pastikan tabel member menampilkan kolom Member & Terdaftar saja, dan tidak ada tombol 'Aktifkan Premium' / 'Set Free' / badge status langganan.",
+    "priority": "Medium",
+    "url": "/admin/login",
+    "steps": [
+      "Buka halaman /admin/login",
+      "Masuk dengan username dan password admin (tersedia di AUTH env admin)",
+      "Buka halaman /admin/member",
+      "Periksa tabel member",
+      "Pastikan tidak ada tombol 'Aktifkan Premium' atau 'Set Free'",
+      "Pastikan tidak ada kolom/badge status langganan premium"
+    ]
+  },
+  {
+    "id": "T09",
+    "title": "Navbar Komunitas & Agenda masih berfungsi",
+    "description": "Dari beranda, hover menu Komunitas pastikan daftar menu muncul (Tentang, Kontributor, Agenda, Bergabung). Buka /agenda pastikan daftar agenda tampil. Pastikan tidak ada error.",
+    "priority": "Medium",
+    "url": "/",
+    "steps": [
+      "Buka halaman beranda /",
+      "Arahkan kursor ke menu 'Komunitas' di header",
+      "Verifikasi dropdown berisi Tentang Komunitas, Kontributor, Agenda Diskusi, Bergabung",
+      "Buka halaman /agenda",
+      "Verifikasi daftar agenda tampil tanpa error"
+    ]
+  },
+  {
+    "id": "T10",
+    "title": "Cari artikel tetap berfungsi",
+    "description": "Di header, isi keyword pencarian sebuah kata umum (misal 'hukum'), submit, lalu pastikan halaman /cari menampilkan hasil artikel tanpa error.",
+    "priority": "Low",
+    "url": "/",
+    "steps": [
+      "Buka halaman beranda /",
+      "Klik kotak pencarian di header",
+      "Ketik kata kunci 'hukum'",
+      "Tekan Enter",
+      "Verifikasi halaman hasil pencarian /cari tampil tanpa error"
+    ]
+  }
+]

@@ -6,6 +6,7 @@ import { apiGet, apiPut } from '@/lib/api'
 import EditorWithImport from '@/components/EditorWithImport'
 import ImageUploader from '@/components/ImageUploader'
 import CategorySelect from '@/components/CategorySelect'
+import TagSelect from '@/components/TagSelect'
 import { IconArrowLeft, IconDeviceFloppy } from '@tabler/icons-react'
 
 export default function EditArtikelPage() {
@@ -16,6 +17,7 @@ export default function EditArtikelPage() {
   const [title, setTitle] = useState('')
   const [excerpt, setExcerpt] = useState('')
   const [category, setCategory] = useState('')
+  const [tagIds, setTagIds] = useState<number[]>([])
   const [author, setAuthor] = useState('')
   const [content, setContent] = useState('')
   const [cover, setCover] = useState('')
@@ -30,8 +32,9 @@ export default function EditArtikelPage() {
         setExcerpt(data.excerpt || '')
         setContent(data.content || '')
         setCover(data.cover || '')
-        // CategorySelect expects a slug; the API returns the category as an object
-        setCategory(data.category?.slug || data.category || '')
+        // apiGet sudah membungkus json.data — category berupa objek {slug,...}, tags berupa array objek
+        setCategory(data.category?.slug || '')
+        setTagIds(Array.isArray(data.tags) ? data.tags.map((t: any) => t.id) : [])
         setAuthor(data.author?.name || data.authorName || '')
         setStatus(data.status || 'draft')
       })
@@ -50,6 +53,7 @@ export default function EditArtikelPage() {
         cover,
         categorySlug: category,
         authorName: author.trim(),
+        tagIds,
         status: newStatus,
       })
       router.push('/admin/artikel')
@@ -104,6 +108,10 @@ export default function EditArtikelPage() {
             <div>
               <label className="block text-xs font-medium text-gray-600 mb-1">Kategori</label>
               <CategorySelect value={category} onChange={setCategory} />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-600 mb-1">Tag</label>
+              <TagSelect value={tagIds} onChange={setTagIds} />
             </div>
           </div>
         </div>

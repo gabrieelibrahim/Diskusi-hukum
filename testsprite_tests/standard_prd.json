@@ -1,0 +1,53 @@
+# PRD — Diskusi Hukum (Situs Komunitas Hukum)
+
+## Ringkasan Produk
+Diskusi Hukum adalah platform/komunitas belajar hukum Indonesia. Menyajikan artikel-artikel hukum (informasi edukatif), agenda diskusi, profil kontributor, dan layanan konsultasi hukum privat via WhatsApp.
+
+## Tujuan Perubahan Terbaru
+1. **Menghapus fitur premium** — semua artikel dapat dibaca penuh oleh siapa saja, tanpa paywall, tanpa langganan premium, tanpa badge premium.
+2. **Menghapus skema akun premium** — tidak ada lagi status langganan/ subscription pada akun member; akun member (daftar/login) tetap berfungsi.
+3. **Mengubah harga konsultasi** — tarif konsultasi hukum menjadi **Rp50.000 (50K) per sesi**, diperbarui di halaman konsultasi, beranda, dan template pesan WhatsApp.
+
+## Flow Utama
+### 1. Baca Artikel
+- Pengguna membuka beranda / daftar artikel / artikel detail.
+- Seluruh konten artikel tampil utuh tanpa perlu login atau bayar.
+- Tidak ada tombol premium / paywall / badge PREMIUM di manapun.
+
+### 2. Member Login/Daftar
+- Pengguna dapat membuat akun member (nama/email/password) dan login.
+- Setelah login, header menampilkan nama member dan menu Logout tanpa badge PREMIUM/FREE.
+
+### 3. Konsultasi Hukum
+- Halaman /konsultasi menampilkan harga 50K per sesi, langkah-langkah transfer, dan CTA ke WhatsApp dengan pesan 'Halo Admin ... Konsultasi Hukum (Rp50.000)...'.
+
+### 4. Admin
+- Admin login via /admin/login.
+- CRUD artikel, agenda, kategori, contributor, kelola member (lihat & hapus), kelola usulan topik, dsb.
+
+## Halaman Utama
+| Route | Deskripsi | Auth |
+|-------|-----------|------|
+| / | Beranda: hero founder, bagian konsultasi, artikel pilihan & terbaru | - |
+| /artikel | Daftar artikel | - |
+| /artikel/[slug] | Detail artikel (konten penuh) | - |
+| /konsultasi | Layanan konsultasi 50K | - |
+| /login | Member login/register | - |
+| /admin/* | Panel admin | admin |
+| /agenda | Agenda acara | - |
+| /kontributor | Daftar kontributor | - |
+| /usulkan-topik | Form usul topik | - |
+
+## Aturan Penting
+1. Tidak ada referensi 'premium', 'langganan', 'paywall', 'subscription', 'PREMIUM', 'IconCrown' di UI.
+2. Harga konsultasi tampil sebagai **50K** dan **Rp50.000** (bukan 35K).
+3. Akun member masih bisa dibikin dan login.
+
+## Non-Goals
+- Tidak ada user management member premium.
+- Tidak perlu pembayaran online.
+
+## Kriteria Sukses
+- Artikel dapat dibaca penuh tanpa gate.
+- Tidak ada UI premium tersisa.
+- Harga konsultasi 50K konsisten di semua tempat.

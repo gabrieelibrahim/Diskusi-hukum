@@ -6,6 +6,7 @@ import { apiPost } from '@/lib/api'
 import EditorWithImport from '@/components/EditorWithImport'
 import ImageUploader from '@/components/ImageUploader'
 import CategorySelect from '@/components/CategorySelect'
+import TagSelect from '@/components/TagSelect'
 import { IconArrowLeft, IconDeviceFloppy } from '@tabler/icons-react'
 
 export default function TulisArtikelPage() {
@@ -13,7 +14,7 @@ export default function TulisArtikelPage() {
   const [title, setTitle] = useState('')
   const [excerpt, setExcerpt] = useState('')
   const [category, setCategory] = useState('')
-  const [tags, setTags] = useState('')
+  const [tagIds, setTagIds] = useState<number[]>([])
   const [author, setAuthor] = useState('')
   const [content, setContent] = useState('')
   const [cover, setCover] = useState('')
@@ -33,7 +34,7 @@ export default function TulisArtikelPage() {
         categorySlug: category,
         cover,
         authorName: author.trim(),
-        tags: tags.split(',').map(t => t.trim()).filter(Boolean),
+        tagIds,
         status,
       })
       router.push('/admin/artikel')
@@ -115,8 +116,8 @@ export default function TulisArtikelPage() {
               <CategorySelect value={category} onChange={setCategory} />
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Tag (pisahkan dengan koma)</label>
-              <input value={tags} onChange={(e) => setTags(e.target.value)} placeholder="pidana, perdata, kontrak" className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/20" />
+              <label className="block text-xs font-medium text-gray-600 mb-1">Tag</label>
+              <TagSelect value={tagIds} onChange={setTagIds} />
             </div>
           </div>
         </div>

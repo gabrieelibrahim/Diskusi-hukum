@@ -37,3 +37,5 @@ public/uploads/*
 
 # misc
 *.log
+testsprite_tests/tmp/
+testsprite_tests/tmp/config.json
