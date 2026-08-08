@@ -42,7 +42,7 @@ export default function HomePage() {
 
   return (
     <>
-      {/* Hero — Premium Legal Consultant */}
+      {/* Hero — Legal Consultant */}
       <section className="bg-white min-h-[calc(100vh-4rem)] flex items-center">
         <div className="mx-auto w-full max-w-[1320px] px-6 sm:px-10 lg:px-12 py-16 lg:py-24">
           <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
@@ -165,7 +165,7 @@ export default function HomePage() {
             <div className="bg-white rounded-2xl overflow-hidden shadow-xl max-w-md w-full lg:justify-self-end">
               <div className="p-8 md:p-10 text-center" style={{ backgroundColor: '#16223B' }}>
                 <p className="text-sm font-medium uppercase tracking-widest mb-2" style={{ color: '#C9A84C' }}>Mulai dari</p>
-                <p className="font-display font-bold text-5xl md:text-6xl text-white mb-2">35K</p>
+                <p className="font-display font-bold text-5xl md:text-6xl text-white mb-2">50K</p>
                 <p className="text-sm" style={{ color: '#8490B1' }}>per sesi konsultasi</p>
               </div>
               <div className="p-7 md:p-8 space-y-4">
@@ -180,7 +180,7 @@ export default function HomePage() {
                   </div>
                 ))}
                 <a
-                  href="https://wa.me/6285802042005?text=Halo%20Admin%20%F0%9F%91%8B%0A%0ASaya%20tertarik%20menggunakan%20layanan%20Konsultasi%20Hukum%20%28Rp35.000%29.%0A%0AMohon%20informasi%20mengenai%20langkah%20selanjutnya.%0A%0ATerima%20kasih."
+                  href="https://wa.me/6285802042005?text=Halo%20Admin%20%F0%9F%91%8B%0A%0ASaya%20tertarik%20menggunakan%20layanan%20Konsultasi%20Hukum%20%28Rp50.000%29.%0A%0AMohon%20informasi%20mengenai%20langkah%20selanjutnya.%0A%0ATerima%20kasih."
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-center gap-2 w-full text-white font-semibold px-5 py-3 rounded-xl mt-4 transition-all duration-200 hover:brightness-110"

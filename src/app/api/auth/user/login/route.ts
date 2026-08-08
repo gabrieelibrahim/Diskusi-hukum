@@ -26,23 +26,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Email atau password salah' }, { status: 401 })
     }
 
-    // If subscription expired, reflect it on login
-    const now = new Date()
-    let status = user.subscriptionStatus
-    if (status === 'premium' && user.subscriptionExpiresAt && new Date(user.subscriptionExpiresAt) < now) {
-      status = 'expired'
-      await db
-        .update(users)
-        .set({ subscriptionStatus: 'expired', updatedAt: new Date().toISOString() })
-        .where(eq(users.id, user.id))
-    }
-
     const token = signToken({
       role: 'user',
       userId: user.id,
       email: user.email,
-      subscriptionStatus: status,
-      subscriptionExpiresAt: user.subscriptionExpiresAt,
     })
 
     return NextResponse.json({
@@ -51,8 +38,6 @@ export async function POST(request: NextRequest) {
         id: user.id,
         name: user.name,
         email: user.email,
-        subscriptionStatus: status,
-        subscriptionExpiresAt: user.subscriptionExpiresAt,
       },
     })
   } catch (error) {

@@ -3,7 +3,6 @@ import { db } from '@/db'
 import { articles, tags, articleTags, categories } from '@/db/schema'
 import { eq, sql } from 'drizzle-orm'
 import { verifyAuth } from '@/middleware/auth'
-import { resolveAccess, previewContent } from '@/lib/premium'
 
 // GET /api/articles/[slug] — single article by slug
 export async function GET(
@@ -19,9 +18,6 @@ export async function GET(
       return NextResponse.json({ error: 'Artikel tidak ditemukan' }, { status: 404 })
     }
 
-    // Resolve caller access level
-    const access = await resolveAccess(request)
-
     // Get category
     const category = article.categorySlug
       ? await db.select().from(categories).where(eq(categories.slug, article.categorySlug)).get()
@@ -34,15 +30,9 @@ export async function GET(
       .innerJoin(tags, eq(articleTags.tagId, tags.id))
       .where(eq(articleTags.articleId, article.id))
 
-    // Premium gating: non-premium callers get a preview + flagged
-    const content = access.canViewFull ? article.content : previewContent(article.content ?? '')
-
     return NextResponse.json({
       data: {
         ...article,
-        content,
-        premium: !access.canViewFull,
-        premiumAccess: access.canViewFull,
         category,
         tags: tagRows.map((r) => r.tag),
       },

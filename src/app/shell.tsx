@@ -22,7 +22,6 @@ import {
   IconBrandInstagram,
   IconBrandTiktok,
   IconBrandWhatsapp,
-  IconCrown,
   IconUser,
   IconMenu2,
   IconX,
@@ -86,8 +85,6 @@ function Header() {
       }
     }
   }, [showMobileMenu])
-
-  const isPremiumMember = member?.subscriptionStatus === 'premium'
 
   const handleSearch = (e: FormEvent) => {
     e.preventDefault()
@@ -253,19 +250,6 @@ function Header() {
             </svg>
           </button>
 
-          {/* Premium button */}
-          <a
-            href="/premium"
-            className={`hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold px-4 py-2 rounded-lg transition-colors ${
-              isPremiumMember
-                ? 'text-[#1B2A4A] bg-[#C9A84C]'
-                : 'text-[#C9A84C] bg-[#C9A84C]/15 hover:bg-[#C9A84C]/25'
-            }`}
-          >
-            <IconCrown size={15} />
-            {isPremiumMember ? 'Premium' : 'Premium'}
-          </a>
-
           {/* Login / member */}
           {member ? (
             <div className="relative group">
@@ -281,20 +265,7 @@ function Header() {
                   <div className="px-4 py-3 border-b border-gray-100">
                     <p className="text-sm font-semibold text-gray-900 truncate">{member.name}</p>
                     <p className="text-xs text-gray-500 truncate">{member.email}</p>
-                    <span
-                      className={`inline-block mt-2 text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                        isPremiumMember ? 'text-[#B8973A] bg-[#C9A84C]/15' : 'text-gray-500 bg-gray-100'
-                      }`}
-                    >
-                      {isPremiumMember ? 'PREMIUM' : 'FREE'}
-                    </span>
                   </div>
-                  <a
-                    href="/premium"
-                    className="block px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 transition-colors"
-                  >
-                    Kelola Premium
-                  </a>
                   <button
                     onClick={handleLogout}
                     className="w-full text-left px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors"
@@ -387,13 +358,7 @@ function Header() {
                         <IconUser size={14} />
                       </span>
                       <span className="truncate">{member.name}</span>
-                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${isPremiumMember ? 'text-[#B8973A] bg-[#C9A84C]/15' : 'text-gray-400 bg-white/10'}`}>
-                        {isPremiumMember ? 'PREMIUM' : 'FREE'}
-                      </span>
                     </div>
-                    <a href="/premium" onClick={() => setShowMobileMenu(false)} className="block text-[#8490B1] hover:text-[#C9A84C] text-sm transition-colors">
-                      Kelola Premium
-                    </a>
                     <button
                       onClick={() => { setShowMobileMenu(false); handleLogout() }}
                       className="text-red-400 text-sm hover:text-red-300 transition-colors"

@@ -3,7 +3,7 @@ import { IconMessages, IconShield, IconClock, IconCoin, IconCheck, IconArrowRigh
 
 export const metadata: Metadata = {
   title: 'Konsultasi Hukum — Diskusi Hukum',
-  description: 'Konsultasi hukum privat bersama Kevin Wong, S.H. Hanya 35K per sesi. Dapatkan solusi hukum untuk masalah Anda.',
+  description: 'Konsultasi hukum privat bersama Kevin Wong, S.H. Hanya 50K per sesi. Dapatkan solusi hukum untuk masalah Anda.',
 }
 
 export default function KonsultasiPage() {
@@ -26,7 +26,7 @@ export default function KonsultasiPage() {
       <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm mb-10">
         <div className="p-8 md:p-10 text-center" style={{ backgroundColor: '#1B2A4A' }}>
           <p className="text-sm font-medium uppercase tracking-widest mb-2" style={{ color: '#C9A84C' }}>Mulai dari</p>
-          <p className="font-display font-bold text-5xl md:text-6xl text-white mb-2">35K</p>
+          <p className="font-display font-bold text-5xl md:text-6xl text-white mb-2">50K</p>
           <p className="text-sm" style={{ color: '#8490B1' }}>per sesi konsultasi</p>
         </div>
         <div className="p-8 md:p-10 space-y-5">
@@ -61,7 +61,7 @@ export default function KonsultasiPage() {
           <div className="w-12 h-12 rounded-xl bg-[#F5F6FA] flex items-center justify-center mx-auto mb-4">
             <IconCoin size={24} className="text-[#C9A84C]" />
           </div>
-          <h3 className="font-semibold text-gray-800 mb-2">1. Transfer 35K</h3>
+          <h3 className="font-semibold text-gray-800 mb-2">1. Transfer 50K</h3>
           <p className="text-sm text-gray-500">Lakukan pembayaran ke rekening yang akan dikirimkan.</p>
         </div>
         <div className="bg-white rounded-xl border border-gray-200 p-6 text-center">
@@ -89,7 +89,7 @@ export default function KonsultasiPage() {
           Klik tombol di bawah untuk memulai konsultasi via WhatsApp.
         </p>
         <a
-          href="https://wa.me/6285802042005?text=Halo%20Admin%20%F0%9F%91%8B%0A%0ASaya%20tertarik%20menggunakan%20layanan%20Konsultasi%20Hukum%20%28Rp35.000%29.%0A%0AMohon%20informasi%20mengenai%20langkah%20selanjutnya.%0A%0ATerima%20kasih."
+          href="https://wa.me/6285802042005?text=Halo%20Admin%20%F0%9F%91%8B%0A%0ASaya%20tertarik%20menggunakan%20layanan%20Konsultasi%20Hukum%20%28Rp50.000%29.%0A%0AMohon%20informasi%20mengenai%20langkah%20selanjutnya.%0A%0ATerima%20kasih."
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 text-white font-semibold px-8 py-3 rounded-xl transition-all duration-200 hover:brightness-110"

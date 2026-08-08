@@ -17,23 +17,11 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Akun tidak ditemukan' }, { status: 404 })
     }
 
-    // Refresh expired status
-    let status = user.subscriptionStatus
-    if (status === 'premium' && user.subscriptionExpiresAt && new Date(user.subscriptionExpiresAt) < new Date()) {
-      status = 'expired'
-      await db
-        .update(users)
-        .set({ subscriptionStatus: 'expired', updatedAt: new Date().toISOString() })
-        .where(eq(users.id, user.id))
-    }
-
     return NextResponse.json({
       data: {
         id: user.id,
         name: user.name,
         email: user.email,
-        subscriptionStatus: status,
-        subscriptionExpiresAt: user.subscriptionExpiresAt,
         createdAt: user.createdAt,
       },
     })

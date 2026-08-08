@@ -119,8 +119,6 @@ export function mapArticle(article: any) {
     glossary: safeParseJSON(article.glossary, []),
     keyPoints: safeParseJSON(article.keyPoints, []),
     disclaimer: article.disclaimer || undefined,
-    premium: article.premium ?? false,
-    premiumAccess: article.premiumAccess ?? false,
   }
 }
 

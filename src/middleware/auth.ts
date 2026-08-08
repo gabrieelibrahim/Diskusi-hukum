@@ -7,8 +7,6 @@ type TokenPayload = {
   role?: 'admin' | 'user'
   userId?: number
   email?: string
-  subscriptionStatus?: 'free' | 'premium' | 'expired'
-  subscriptionExpiresAt?: string | null
   iat?: number
   exp?: number
 }

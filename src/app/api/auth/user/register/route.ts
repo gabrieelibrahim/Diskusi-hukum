@@ -37,8 +37,6 @@ export async function POST(request: NextRequest) {
         name,
         email: email.toLowerCase(),
         passwordHash,
-        subscriptionStatus: 'free',
-        subscriptionExpiresAt: null,
         createdAt: now,
         updatedAt: now,
       })
@@ -55,7 +53,6 @@ export async function POST(request: NextRequest) {
           id: user.id,
           name: user.name,
           email: user.email,
-          subscriptionStatus: user.subscriptionStatus,
         },
       },
       { status: 201 },

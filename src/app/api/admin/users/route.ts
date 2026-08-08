@@ -20,8 +20,6 @@ export async function GET(request: NextRequest) {
         id: u.id,
         name: u.name,
         email: u.email,
-        subscriptionStatus: u.subscriptionStatus,
-        subscriptionExpiresAt: u.subscriptionExpiresAt,
         createdAt: u.createdAt,
       })),
     })

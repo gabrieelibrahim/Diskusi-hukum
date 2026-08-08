@@ -34,11 +34,7 @@ export default function LoginPage() {
 
       if (mode === 'login') {
         localStorage.setItem('member_token', data.token)
-        // Redirect back to article if there was a pending one
-        const pending = localStorage.getItem('premium_return_to')
-        localStorage.removeItem('premium_return_to')
-        if (pending) router.push(pending)
-        else router.push('/')
+        router.push('/')
       } else {
         // After register, switch to login mode with a success hint
         setMode('login')
@@ -67,7 +63,7 @@ export default function LoginPage() {
           </h1>
           <p className="text-sm text-[#5A6577] mt-1">
             {mode === 'login'
-              ? 'Akses artikel premium dengan akun member'
+              ? 'Masuk dengan akun member Anda'
               : 'Daftar gratis untuk mulai membaca'}
           </p>
         </div>

@@ -117,10 +117,6 @@ export const users = sqliteTable('users', {
   name: text('name').notNull(),
   email: text('email').notNull().unique(),
   passwordHash: text('password_hash').notNull(),
-  // free | premium | expired
-  subscriptionStatus: text('subscription_status').default('free'),
-  // ISO date when the current premium period ends (null if not premium)
-  subscriptionExpiresAt: text('subscription_expires_at'),
   createdAt: text('created_at'),
   updatedAt: text('updated_at'),
 })
